@@ -25,6 +25,7 @@ import axios from "axios";
 import { API_BASE_URL } from "../../axiosconf";
 import AgregarRendimiento from "./AgregarRendimiento";
 import EditarRendimiento from "./EditarRendimiento";
+import EliminarRendimiendo from "./EliminarRendimiendo";
 const statusColorMap2 = {
   true: "success",
   false: "danger",
@@ -69,6 +70,9 @@ const Rendimiento = () => {
                   .toLowerCase()
                   .includes(searchTerm.toLowerCase()) ||
                 item.conductor_apellido
+                  .toLowerCase()
+                  .includes(searchTerm.toLowerCase()) ||
+                item.rendimiento?.ruta
                   .toLowerCase()
                   .includes(searchTerm.toLowerCase())
             )
@@ -424,10 +428,10 @@ const Rendimiento = () => {
                     updateRendimiento={updateRendimiento}
                     Rendimiento={item}
                   ></EditarRendimiento>
-                  {/*<EliminarData
-                    DataGeneral={item}
-                    updateDataGeneral={updateDataGeneral}
-                  ></EliminarData> */}
+                  <EliminarRendimiendo
+                    updateRendimiento={updateRendimiento}
+                    Rendimiento={item}
+                  ></EliminarRendimiendo>
                 </TableCell>
               </TableRow>
             )}
