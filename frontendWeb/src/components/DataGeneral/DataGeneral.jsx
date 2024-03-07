@@ -399,7 +399,18 @@ const DataGeneral = () => {
             {/* <TableColumn key="producto" allowsSorting>
                 Producto
             </TableColumn> */}
-
+            {/* <TableColumn key="Origen" allowsSorting>
+              Origen
+            </TableColumn>
+            <TableColumn key="Destino" allowsSorting>
+              Destino
+            </TableColumn>
+            <TableColumn key="Carga" allowsSorting>
+              Carga
+            </TableColumn>
+            <TableColumn key="Peso" allowsSorting>
+              Peso
+            </TableColumn> */}
             <TableColumn key="documento" allowsSorting>
               Documento
             </TableColumn>
@@ -407,10 +418,10 @@ const DataGeneral = () => {
               Galones
             </TableColumn>
             <TableColumn key="precio" allowsSorting>
-              Precio
+              Precio s/.
             </TableColumn>
             <TableColumn key="total" allowsSorting>
-              Total
+              Monto Total s/.
             </TableColumn>
             <TableColumn key="kilometraje" allowsSorting>
               Kilometraje
@@ -429,9 +440,7 @@ const DataGeneral = () => {
             <TableColumn key="estado" allowsSorting>
               Pago
             </TableColumn>
-            <TableColumn key="detalle" allowsSorting>
-              Detalle
-            </TableColumn>
+
             <TableColumn key="estado_rendimiento" allowsSorting>
               Rendimiento
             </TableColumn>
@@ -440,6 +449,9 @@ const DataGeneral = () => {
               Acciones
             </TableColumn>
           </TableHeader>
+          <TableColumn key="detalle" allowsSorting>
+            Detalle Pago
+          </TableColumn>
           <TableBody
             items={list.items.slice(
               (page - 1) * rowsPerPage,
@@ -461,12 +473,22 @@ const DataGeneral = () => {
                 <TableCell>
                   {item?.conductor_nombre} {item?.conductor_apellido}
                 </TableCell>
+                {/* <TableCell>{item?.origen}</TableCell>
+                <TableCell>{item?.destino}</TableCell>
+                <TableCell>{item?.carga}</TableCell>
+                <TableCell>{item?.peso}</TableCell> */}
                 {/* <TableCell>{item?.producto_nombre}</TableCell> */}
 
                 <TableCell>{item?.documento}</TableCell>
                 <TableCell>{item?.galones}</TableCell>
-                <TableCell>{item?.precio}</TableCell>
-                <TableCell>{item?.total}</TableCell>
+                <TableCell>
+                  {"s/. "}
+                  {item?.precio}
+                </TableCell>
+                <TableCell>
+                  {"s/. "}
+                  {item?.total}
+                </TableCell>
                 <TableCell>{item?.kilometraje}</TableCell>
 
                 <TableCell>{item?.grifo_nombre}</TableCell>
@@ -484,7 +506,7 @@ const DataGeneral = () => {
                     {item?.estado === "CP" ? "C.Parcial" : ""}
                   </Chip>
                 </TableCell>
-                <TableCell>{item?.detalle}</TableCell>
+
                 <TableCell>
                   <Chip
                     className="capitalize"
@@ -495,7 +517,7 @@ const DataGeneral = () => {
                     {item?.estado_rendimiento ? "Finalizado" : "Pendiente"}
                   </Chip>
                 </TableCell>
-                <TableCell className="flex relative">
+                <TableCell>
                   <EditarData
                     DataGeneral={item}
                     updateDataGeneral={updateDataGeneral}
@@ -509,6 +531,7 @@ const DataGeneral = () => {
                     updateDataGeneral={updateDataGeneral}
                   ></EliminarData>
                 </TableCell>
+                <TableCell>{item?.detalle}</TableCell>
               </TableRow>
             )}
           </TableBody>

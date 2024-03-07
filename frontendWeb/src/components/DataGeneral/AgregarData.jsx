@@ -38,6 +38,10 @@ export default function AgregarData({ type = "agregar", updateDataGeneral }) {
   const [precio, setPrecio] = useState("");
   const [total, setTotal] = useState("");
   const [Kilometraje, setKilometraje] = useState("");
+  // const [origen, setOrigen] = useState("");
+  // const [carga, setCarga] = useState("");
+  // const [peso, setPeso] = useState("");
+  // const [destino, setDestino] = useState("");
   const [selectedCamion, setSelectedCamion] = useState(null);
   const [selectedProducto, setSelectedProducto] = useState(null);
   const [selectedGrifo, setSelectedGrifo] = useState(null);
@@ -105,6 +109,10 @@ export default function AgregarData({ type = "agregar", updateDataGeneral }) {
           detalle: operacionCompleta,
           observacion: descripcion,
           estado_rendimiento: false,
+          // origen: origen,
+          // destino: destino,
+          // carga: carga,
+          // peso: peso,
         };
         console.log("enviar:", data);
 
@@ -481,6 +489,7 @@ export default function AgregarData({ type = "agregar", updateDataGeneral }) {
                         <Radio value="C">Cancelado</Radio>
                         <Radio value="CP">Cancelado Parcialmente</Radio>
                       </RadioGroup>
+
                       <Textarea
                         label="Descripcion"
                         placeholder="Ingrese sus descripcion"

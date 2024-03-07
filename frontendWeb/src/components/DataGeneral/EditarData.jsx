@@ -43,6 +43,10 @@ export default function EditarData({
   const [total, setTotal] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [Kilometraje, setKilometraje] = useState("");
+  // const [origen, setOrigen] = useState("");
+  // const [carga, setCarga] = useState("");
+  // const [peso, setPeso] = useState("");
+  // const [destino, setDestino] = useState("");
   const [operacionCompleta, setOperacionCompleta] = useState("");
   const [grifo, setGrifo] = useState("");
   const [selectedCamion, setSelectedCamion] = useState(null);
@@ -114,6 +118,10 @@ export default function EditarData({
           estado: estado,
           detalle: operacionCompleta,
           observacion: descripcion,
+          // origen: origen,
+          // destino: destino,
+          // carga: carga,
+          // peso: peso,
         };
         console.log(data);
 
@@ -265,6 +273,10 @@ export default function EditarData({
       setDescripcion(DataGeneral.observacion);
       setOperacionCompleta(DataGeneral.detalle);
       setEstado(DataGeneral.estado);
+      // setOrigen(DataGeneral.origen);
+      // setDestino(DataGeneral.destino);
+      // setCarga(DataGeneral.carga);
+      // setPeso(DataGeneral.peso);
       // Configurar el conductor seleccionado
       const selectedCamion = camiones.find(
         (camion) => camion.id === DataGeneral.placa
@@ -474,7 +486,38 @@ export default function EditarData({
                     value={Kilometraje}
                     onChange={(e) => handleNameChange(e, setKilometraje)}
                   ></Input>
+                  {/* <Input
+                    label="Origen"
+                    isInvalid={error}
+                    errorMessage={error && "Ingrese el Origen correctamente"}
+                    value={origen}
+                    onChange={(e) => handleNameChange(e, setOrigen)}
+                  ></Input>
+                  <Input
+                    label="Destino"
+                    isInvalid={error}
+                    errorMessage={error && "Ingrese el Destino correctamente"}
+                    value={destino}
+                    onChange={(e) => handleNameChange(e, setDestino)}
+                  ></Input>
+                  <Input
+                    label="Carga"
+                    isInvalid={error}
+                    errorMessage={error && "Ingrese la carga correctamente"}
+                    value={carga}
+                    onChange={(e) => handleNameChange(e, setCarga)}
+                    className="mb-2"
+                  />
+                  <Input
+                    label="Peso"
+                    isInvalid={error}
+                    errorMessage={error && "Ingrese el peso correctamente"}
+                    value={peso}
+                    onChange={(e) => handleNameChange(e, setPeso)}
+                    className="mb-2"
+                  /> */}
                 </div>
+
                 <Accordion variant="light">
                   <AccordionItem
                     key="1"

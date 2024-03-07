@@ -38,9 +38,7 @@ export default function AgregarRendimiento({
   const [km, setkm] = useState(Rendimiento.kilometraje);
 
   const [error, setError] = useState(false);
-  const [ruta, setRuta] = useState("");
-  const [carga, setCarga] = useState("");
-  const [peso, setPeso] = useState("");
+
   const [maxKilometraje, setMaxKilometraje] = useState(null);
   const [diferenciaKilometraje, setDiferenciaKilometraje] = useState(null);
   const [rendimientokmxgalon, setRendimientoxgalon] = useState(null);
@@ -101,6 +99,7 @@ export default function AgregarRendimiento({
     const fechaParaEnviar = new Date(fechaCreacion).toISOString();
 
     try {
+      console.log("entro");
       if (type === "agregar") {
         // Configurar el encabezado con el token de acceso
         const tokens = JSON.parse(localStorage.getItem("tokens"));
@@ -116,9 +115,9 @@ export default function AgregarRendimiento({
         const data = {
           id_datageneral: Rendimiento.id,
           fecha_tanqueo: fechaParaEnviar,
-          ruta: ruta,
-          carga: carga,
-          peso: peso,
+          // ruta: ruta,
+          // carga: carga,
+          // peso: peso,
           km_recorrido: diferenciaKilometraje,
           rend_kmxglp: rendimientokmxgalon,
           gl_esperado: rendimientoCalculado,
@@ -145,6 +144,7 @@ export default function AgregarRendimiento({
           headers,
         });
       }
+
       // Luego de editar el usuario, llama a la función de actualización
       updateRendimiento();
       onClose();
@@ -309,30 +309,15 @@ export default function AgregarRendimiento({
 
                   {/* Segunda columna */}
                   <div>
-                    <Textarea
+                    {/* <Textarea
                       label="Ruta"
                       isInvalid={error}
                       errorMessage={error && "Ingrese la ruta correctamente"}
                       value={ruta}
                       onChange={(e) => handleNameChange(e, setRuta)}
                       className="mb-2"
-                    />
-                    <Input
-                      label="Carga"
-                      isInvalid={error}
-                      errorMessage={error && "Ingrese la carga correctamente"}
-                      value={carga}
-                      onChange={(e) => handleNameChange(e, setCarga)}
-                      className="mb-2"
-                    />
-                    <Input
-                      label="Peso"
-                      isInvalid={error}
-                      errorMessage={error && "Ingrese el peso correctamente"}
-                      value={peso}
-                      onChange={(e) => handleNameChange(e, setPeso)}
-                      className="mb-2"
-                    />
+                    /> */}
+
                     <Input
                       label="Rendimiento esperado"
                       value={rendimientoEsperado}

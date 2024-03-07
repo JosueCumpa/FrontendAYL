@@ -26,6 +26,7 @@ import { API_BASE_URL } from "../../axiosconf";
 import AgregarRendimiento from "./AgregarRendimiento";
 import EditarRendimiento from "./EditarRendimiento";
 import EliminarRendimiendo from "./EliminarRendimiendo";
+import AgregarRendimientoVacio from "./AgregarRendimientoVacio";
 const statusColorMap2 = {
   true: "success",
   false: "danger",
@@ -45,7 +46,7 @@ const Rendimiento = () => {
     async load({ signal }) {
       try {
         const tokens = JSON.parse(localStorage.getItem("tokens"));
-        const res = await axios.get(`${API_BASE_URL}/listado_nombres/`, {
+        const res = await axios.get(`${API_BASE_URL}/listado_rendimiento/`, {
           headers: {
             Authorization: `Bearer ${tokens.access}`,
           },
@@ -70,9 +71,6 @@ const Rendimiento = () => {
                   .toLowerCase()
                   .includes(searchTerm.toLowerCase()) ||
                 item.conductor_apellido
-                  .toLowerCase()
-                  .includes(searchTerm.toLowerCase()) ||
-                item.rendimiento?.ruta
                   .toLowerCase()
                   .includes(searchTerm.toLowerCase())
             )
@@ -104,7 +102,7 @@ const Rendimiento = () => {
             await refreshToken();
             const refreshedTokens = JSON.parse(localStorage.getItem("tokens"));
             const refreshedRes = await axios.get(
-              `${API_BASE_URL}/listado_nombres/`,
+              `${API_BASE_URL}/listado_rendimiento/`,
               {
                 headers: {
                   Authorization: `Bearer ${refreshedTokens.access}`,
@@ -254,13 +252,13 @@ const Rendimiento = () => {
         <CardHeader className="flex gap-3 justify-start font-bold text-large ">
           <div className=" px-8 rounded-2xl flex gap-3  grid grid-cols-2 sm:grid-cols-4">
             <span style={{ paddingTop: "10px" }}>GESTION DE RENDIMIENTO</span>
-            {/* {agregar && (
-              <AgregarData
+            {agregar && (
+              <AgregarRendimientoVacio
                 style={{ paddingTop: "10px" }}
                 onClose={() => setAgregar(false)}
-                updateDataGeneral={updateDataGeneral}
+                updateRendimiento={updateRendimiento}
               />
-            )} */}
+            )}
 
             {/* Componente de búsqueda */}
             <Input
@@ -304,7 +302,7 @@ const Rendimiento = () => {
             {/* <TableColumn key="id" allowsSorting>
               id
             </TableColumn> */}
-            <TableColumn key="fecha_creacion" allowsSorting>
+            <TableColumn key="fecha_tanqueo" allowsSorting>
               F. Tanqueo
             </TableColumn>
             {/* <TableColumn key="fecha_actualizacion" allowsSorting>
@@ -327,8 +325,11 @@ const Rendimiento = () => {
                 Producto
             </TableColumn> */}
 
-            <TableColumn key="ruta" allowsSorting>
-              Ruta
+            <TableColumn key="origen" allowsSorting>
+              Origen
+            </TableColumn>
+            <TableColumn key="destino" allowsSorting>
+              Destino
             </TableColumn>
             <TableColumn key="carga" allowsSorting>
               Carga
@@ -363,6 +364,7 @@ const Rendimiento = () => {
             <TableColumn key="acciones" allowsSorting>
               Acciones
             </TableColumn>
+            <TableColumn key=" " allowsSorting></TableColumn>
           </TableHeader>
           <TableBody
             items={list.items.slice(
@@ -376,38 +378,37 @@ const Rendimiento = () => {
               <TableRow key={item?.id}>
                 {/* <TableCell>{item?.id}</TableCell> */}
                 <TableCell>
-                  {item?.fecha_creacion &&
-                    format(new Date(item?.fecha_creacion), "dd-MM-yyyy")}
+                  {item?.fecha_rendimiento &&
+                    format(new Date(item?.fecha_rendimiento), "dd-MM-yyyy")}
                 </TableCell>
 
                 {/* <TableCell>{item?.fecha_actualizacion && format(new Date(item?.fecha_actualizacion), 'dd-MM-yyyy')}</TableCell> */}
 
-                <TableCell>{item?.rendimiento?.año}</TableCell>
-                <TableCell>{item?.rendimiento?.periodo}</TableCell>
+                <TableCell>{item?.año}</TableCell>
+                <TableCell>{item?.periodo}</TableCell>
                 <TableCell>{item?.placa_nombre}</TableCell>
                 <TableCell>
                   {item?.conductor_nombre} {item?.conductor_apellido}
                 </TableCell>
                 {/* <TableCell>{item?.producto_nombre}</TableCell> */}
 
-                <TableCell>{item?.rendimiento?.ruta}</TableCell>
-                <TableCell>{item?.rendimiento?.carga}</TableCell>
-                <TableCell>{item?.rendimiento?.peso}</TableCell>
+                <TableCell>{item?.origen}</TableCell>
+                <TableCell>{item?.destino}</TableCell>
+                <TableCell>{item?.carga}</TableCell>
+                <TableCell>{item?.peso}</TableCell>
                 <TableCell>{item?.galones}</TableCell>
-                <TableCell>{item?.rendimiento?.km_recorrido}</TableCell>
+                <TableCell>{item?.km_recorrido}</TableCell>
 
-                <TableCell>{item?.rendimiento?.rend_kmxglp}</TableCell>
-                <TableCell>{item?.rendimiento?.gl_esperado}</TableCell>
-                <TableCell>{item?.rendimiento?.ren_esperado}</TableCell>
+                <TableCell>{item?.rend_kmxglp}</TableCell>
+                <TableCell>{item?.gl_esperado}</TableCell>
+                <TableCell>{item?.ren_esperado}</TableCell>
 
                 <TableCell
                   className={
-                    item?.rendimiento?.exceso_real < 0
-                      ? "text-green-500"
-                      : "text-red-500"
+                    item?.exceso_real < 0 ? "text-green-500" : "text-red-500"
                   }
                 >
-                  {item?.rendimiento?.exceso_real}
+                  {item?.exceso_real}
                 </TableCell>
                 <TableCell>
                   <Chip
@@ -419,20 +420,21 @@ const Rendimiento = () => {
                     {item?.estado_rendimiento ? "Finalizado" : "Pendiente"}
                   </Chip>
                 </TableCell>
-                <TableCell className="flex relative">
-                  <AgregarRendimiento
+                <TableCell>
+                  {/* <AgregarRendimiento
                     Rendimiento={item}
                     updateRendimiento={updateRendimiento}
-                  ></AgregarRendimiento>
-                  <EditarRendimiento
+                  ></AgregarRendimiento> */}
+                  {/* <EditarRendimiento
                     updateRendimiento={updateRendimiento}
                     Rendimiento={item}
                   ></EditarRendimiento>
                   <EliminarRendimiendo
                     updateRendimiento={updateRendimiento}
                     Rendimiento={item}
-                  ></EliminarRendimiendo>
+                  ></EliminarRendimiendo> */}
                 </TableCell>
+                <TableCell></TableCell>
               </TableRow>
             )}
           </TableBody>

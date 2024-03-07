@@ -102,7 +102,9 @@ export default function EliminarRendimiendo({
                 </Button>
                 <Button
                   color="success"
-                  onPress={() => handleDelete(Rendimiento.id, onClose)}
+                  onPress={() =>
+                    handleDelete(Rendimiento.rendimiento.id, onClose)
+                  }
                 >
                   Eliminar
                 </Button>

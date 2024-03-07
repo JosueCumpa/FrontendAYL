@@ -102,14 +102,11 @@ export default function EditarRendimiento({
           "Content-Type": "application/json",
         };
 
-        const url = `${API_BASE_URL}/Rendimiento/${Rendimiento.rendimiento.id_datageneral}/`;
+        const url = `${API_BASE_URL}/Rendimiento/${Rendimiento.rendimiento.id}/`;
 
         const data = {
           id_datageneral: Rendimiento.id,
           fecha_tanqueo: fechaParaEnviar,
-          ruta: ruta,
-          carga: carga,
-          peso: peso,
           km_recorrido: diferenciaKilometraje,
           rend_kmxglp: rendimientokmxgalon,
           gl_esperado: rendimientoCalculado,
@@ -221,9 +218,9 @@ export default function EditarRendimiento({
   useEffect(() => {
     // Configurar el estado inicial al abrir el modal
     if (type === "edit" && Rendimiento) {
-      setRuta(Rendimiento.rendimiento.ruta);
-      setCarga(Rendimiento.rendimiento.carga);
-      setPeso(Rendimiento.rendimiento.peso);
+      // setRuta(Rendimiento.rendimiento.ruta);
+      // setCarga(Rendimiento.rendimiento.carga);
+      // setPeso(Rendimiento.rendimiento.peso);
       setRendimientoEsperado(Rendimiento.rendimiento.ren_esperado);
       setEstado_rendimiento(Rendimiento.estado_rendimiento);
       setDiferenciaKilometraje(Rendimiento.rendimiento.km_recorrido);
@@ -317,7 +314,7 @@ export default function EditarRendimiento({
 
                   {/* Segunda columna */}
                   <div>
-                    <Textarea
+                    {/* <Textarea
                       label="Ruta"
                       isInvalid={error}
                       errorMessage={error && "Ingrese la ruta correctamente"}
@@ -340,7 +337,7 @@ export default function EditarRendimiento({
                       value={peso}
                       onChange={(e) => handleNameChange(e, setPeso)}
                       className="mb-2"
-                    />
+                    /> */}
                     <Input
                       label="Rendimiento esperado"
                       value={rendimientoEsperado}

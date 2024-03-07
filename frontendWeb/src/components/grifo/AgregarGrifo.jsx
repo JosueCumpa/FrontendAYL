@@ -30,7 +30,7 @@ export default function AgregarGrifo({ type = "agregar", updateGrifo }) {
   const handleNameChange = (e, fieldSetter) => {
     let value = e.target.value;
     // Restringir caracteres: solo letras y números
-    value = value.replace(/[^a-zA-Z0-9]+/g, " ");
+    value = value.replace(/[^a-zA-Z0-9.]+/g, " ");
     if (value.length > 150) {
       value = value.substring(0, 150);
     }

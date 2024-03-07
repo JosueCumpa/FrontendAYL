@@ -131,6 +131,7 @@ export default function TaspasoData({
 
         const url = `${API_BASE_URL}/DataGeneral/${DataGeneral?.id}/`;
         const url2 = `${API_BASE_URL}/DataGeneral/${busquedaid}/`;
+        const url3 = `${API_BASE_URL}/traspasos/`;
         const data = {
           fecha_creacion: fechaCreacion,
           placa: placaid,
@@ -146,13 +147,13 @@ export default function TaspasoData({
           cantidad_traspaso: cantidadtraspaso,
           Monto_Transpaso: MontoTranspaso,
         };
-        console.log(data);
+        //console.log(data);
 
         // Agregar el encabezado a la solicitud
         await toast.promise(axios.patch(url, data, { headers }), {
           loading: "Actualizando...",
           success: "Data General actualizada 1",
-          error: "Error al actualizar Data General! Verifique los campos",
+          error: "Error al actualizar Data General 1! Verifique los campos",
         });
 
         const dataSu = {
@@ -170,12 +171,23 @@ export default function TaspasoData({
           cantidad_traspaso: galonesinter,
           Monto_Transpaso: Number(galonesinter) * Number(precio),
         };
-        console.log(dataSu);
+        //console.log(dataSu);
         // Agregar el encabezado a la solicitud
         await toast.promise(axios.patch(url2, dataSu, { headers }), {
           loading: "Actualizando...",
           success: "Data General actualizada 2",
-          error: "Error al actualizar Data General! Verifique los campos",
+          error: "Error al actualizar Data General 2! Verifique los campos",
+        });
+        //Registrar el historial de traspasos
+        // id, id_datageneral, cantidad
+        const dataTraspaso = {
+          id_datageneral: id,
+          cantidad_traspaso: galonesinter,
+        };
+        await toast.promise(axios.post(url3, dataTraspaso, { headers }), {
+          loading: "Actualizando...",
+          success: "Traspaso registrado",
+          error: "Error al actualizar en traspaso! Verifique los campos",
         });
       }
 
@@ -211,21 +223,6 @@ export default function TaspasoData({
   }, [type, DataGeneral]);
 
   const handleClose = () => {
-    setPlaca("");
-    setGalones("");
-    setProducto("");
-    setConductor("");
-    setApellido("");
-    setDocumento("");
-    setPrecio("");
-    setId("");
-    setTotal("");
-    setKilometraje("");
-    setGrifo("");
-    setSelectedCamion("");
-    setSelectedProducto("");
-    setSelectedGrifo("");
-
     onClose();
   };
 
@@ -283,11 +280,10 @@ export default function TaspasoData({
                   value={galonesinter}
                   onChange={(e) => handleNameChange(e, setGalonesInter)}
                 ></Input>
-                <p>Galones aasd: {galonesinter}</p>
                 <Button color="success" onClick={() => calcularTotal()}>
                   actualizar
                 </Button>
-                <p>Galones aasasdasd: {galoactual1}</p>
+                <p>Galones que quedan: {galoactual1}</p>
               </ModalBody>
               <ModalFooter>
                 <Button
