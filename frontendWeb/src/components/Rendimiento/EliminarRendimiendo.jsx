@@ -84,13 +84,14 @@ export default function EliminarRendimiendo({
               </ModalHeader>
               <ModalBody>
                 <p>
-                  Estas seguro de eliminar el Rendimiento :{" "}
-                  {Rendimiento.rendimiento.id} {"   DataGeneral:"}
-                  {Rendimiento.id} {" placa: "} {Rendimiento.placa_nombre}
+                  Estas seguro de eliminar el Rendimiento : {Rendimiento.id}{" "}
+                  {"   DataGeneral:"}
+                  {Rendimiento.id_data_general} {" placa: "}{" "}
+                  {Rendimiento.placa_nombre}
                   {" Fecha de tanqueo: "}
-                  {Rendimiento.rendimiento.fecha_tanqueo &&
+                  {Rendimiento.fecha_rendimiento &&
                     format(
-                      new Date(Rendimiento?.rendimiento.fecha_tanqueo),
+                      new Date(Rendimiento?.fecha_rendimiento),
                       "dd-MM-yyyy"
                     )}
                   ?
@@ -102,9 +103,7 @@ export default function EliminarRendimiendo({
                 </Button>
                 <Button
                   color="success"
-                  onPress={() =>
-                    handleDelete(Rendimiento.rendimiento.id, onClose)
-                  }
+                  onPress={() => handleDelete(Rendimiento.id, onClose)}
                 >
                   Eliminar
                 </Button>

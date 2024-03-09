@@ -444,6 +444,9 @@ const DataGeneral = () => {
             <TableColumn key="estado_rendimiento" allowsSorting>
               Rendimiento
             </TableColumn>
+            <TableColumn key="estado_omitir" allowsSorting>
+              Omitir
+            </TableColumn>
 
             <TableColumn key="acciones" allowsSorting>
               Acciones
@@ -515,6 +518,16 @@ const DataGeneral = () => {
                     variant="flat"
                   >
                     {item?.estado_rendimiento ? "Finalizado" : "Pendiente"}
+                  </Chip>
+                </TableCell>
+                <TableCell>
+                  <Chip
+                    className="capitalize"
+                    color={statusColorMap2[item?.estado_omitir]}
+                    size="sm"
+                    variant="flat"
+                  >
+                    {item?.estado_omitir ? "omitido" : "no omitido"}
                   </Chip>
                 </TableCell>
                 <TableCell>

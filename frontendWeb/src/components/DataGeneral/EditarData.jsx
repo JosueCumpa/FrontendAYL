@@ -37,6 +37,7 @@ export default function EditarData({
   const [galones, setGalones] = useState("");
   const [producto, setProducto] = useState("");
   const [conductor, setConductor] = useState("");
+  const [estate, setEstate] = useState("");
   const [estado, setEstado] = useState("");
   const [documento, setDocumento] = useState("");
   const [precio, setPrecio] = useState("");
@@ -118,6 +119,7 @@ export default function EditarData({
           estado: estado,
           detalle: operacionCompleta,
           observacion: descripcion,
+          estado_omitir: estate,
           // origen: origen,
           // destino: destino,
           // carga: carga,
@@ -273,6 +275,7 @@ export default function EditarData({
       setDescripcion(DataGeneral.observacion);
       setOperacionCompleta(DataGeneral.detalle);
       setEstado(DataGeneral.estado);
+      setEstate(DataGeneral.estado_omitir);
       // setOrigen(DataGeneral.origen);
       // setDestino(DataGeneral.destino);
       // setCarga(DataGeneral.carga);
@@ -516,6 +519,9 @@ export default function EditarData({
                     onChange={(e) => handleNameChange(e, setPeso)}
                     className="mb-2"
                   /> */}
+                  <Switch defaultSelected={estate} onValueChange={setEstate}>
+                    Omitir
+                  </Switch>
                 </div>
 
                 <Accordion variant="light">

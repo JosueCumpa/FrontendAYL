@@ -29,6 +29,7 @@ export default function AgregarData({ type = "agregar", updateDataGeneral }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toggleVisibility = () => setIsVisible(!isVisible);
   const [placa, setPlaca] = useState("");
+  const [estate, setEstate] = useState("");
   const [estado, setEstado] = useState("P");
   // const [detalle, setDetalle] = useState("");
   const [operacion, setOperacion] = useState("");
@@ -109,6 +110,7 @@ export default function AgregarData({ type = "agregar", updateDataGeneral }) {
           detalle: operacionCompleta,
           observacion: descripcion,
           estado_rendimiento: false,
+          estado_omitir: estate,
           // origen: origen,
           // destino: destino,
           // carga: carga,
@@ -159,6 +161,7 @@ export default function AgregarData({ type = "agregar", updateDataGeneral }) {
     setSelectedGrifo(null); // Reiniciar el grifo seleccionado
     setSelectedBanco(null); // Reiniciar el banco seleccionado
     setOperacionCompleta(""); // Reiniciar la operación completa
+    setEstate("");
     setFechaCreacion(new Date()); // Restablecer la fecha de creación
     setError(false); // Restablecer el estado de error a falso
     onClose(); // Cerrar el modal
@@ -442,6 +445,9 @@ export default function AgregarData({ type = "agregar", updateDataGeneral }) {
                     value={Kilometraje}
                     onChange={(e) => handleNameChange(e, setKilometraje)}
                   ></Input>
+                  <Switch defaultSelected={estate} onValueChange={setEstate}>
+                    Omitir
+                  </Switch>
                 </div>
                 <Accordion variant="light">
                   <AccordionItem

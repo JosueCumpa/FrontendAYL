@@ -23,7 +23,7 @@ import {
 import { useAsyncList } from "@react-stately/data";
 import axios from "axios";
 import { API_BASE_URL } from "../../axiosconf";
-import AgregarRendimiento from "./AgregarRendimiento";
+
 import EditarRendimiento from "./EditarRendimiento";
 import EliminarRendimiendo from "./EliminarRendimiendo";
 import AgregarRendimientoVacio from "./AgregarRendimientoVacio";
@@ -62,17 +62,15 @@ const Rendimiento = () => {
                 item.placa_nombre
                   .toLowerCase()
                   .includes(searchTerm.toLowerCase()) ||
-                (item.rendimiento &&
-                  item.rendimiento.periodo &&
-                  item.rendimiento.periodo
-                    .toLowerCase()
-                    .includes(searchTerm.toLowerCase())) ||
+                item.periodo.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 item.conductor_nombre
                   .toLowerCase()
                   .includes(searchTerm.toLowerCase()) ||
                 item.conductor_apellido
                   .toLowerCase()
-                  .includes(searchTerm.toLowerCase())
+                  .includes(searchTerm.toLowerCase()) ||
+                item.origen.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                item.destino.toLowerCase().includes(searchTerm.toLowerCase())
             )
           : res.data;
         // console.log(res.data);
@@ -305,9 +303,6 @@ const Rendimiento = () => {
             <TableColumn key="fecha_tanqueo" allowsSorting>
               F. Tanqueo
             </TableColumn>
-            {/* <TableColumn key="fecha_actualizacion" allowsSorting>
-                F.actualización
-            </TableColumn> */}
 
             <TableColumn key="año" allowsSorting>
               Año
@@ -321,9 +316,6 @@ const Rendimiento = () => {
             <TableColumn key="conductor" allowsSorting>
               Conductor
             </TableColumn>
-            {/* <TableColumn key="producto" allowsSorting>
-                Producto
-            </TableColumn> */}
 
             <TableColumn key="origen" allowsSorting>
               Origen
@@ -421,18 +413,14 @@ const Rendimiento = () => {
                   </Chip>
                 </TableCell>
                 <TableCell>
-                  {/* <AgregarRendimiento
-                    Rendimiento={item}
-                    updateRendimiento={updateRendimiento}
-                  ></AgregarRendimiento> */}
-                  {/* <EditarRendimiento
+                  <EditarRendimiento
                     updateRendimiento={updateRendimiento}
                     Rendimiento={item}
                   ></EditarRendimiento>
                   <EliminarRendimiendo
                     updateRendimiento={updateRendimiento}
                     Rendimiento={item}
-                  ></EliminarRendimiendo> */}
+                  ></EliminarRendimiendo>
                 </TableCell>
                 <TableCell></TableCell>
               </TableRow>

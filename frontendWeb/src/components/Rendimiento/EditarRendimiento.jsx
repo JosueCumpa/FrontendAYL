@@ -1,53 +1,259 @@
 import React, { useState, useEffect } from "react";
 import {
   Button,
-  Input,
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalHeader,
-  Textarea,
   Tooltip,
   useDisclosure,
-  Chip,
+  Select,
+  SelectItem,
+  Input,
   Switch,
+  Accordion,
+  AccordionItem,
 } from "@nextui-org/react";
 import axios from "axios";
-import toast, { Toaster } from "react-hot-toast";
 import { API_BASE_URL } from "../../axiosconf";
+import { format } from "date-fns";
+import toast, { Toaster } from "react-hot-toast";
+
 import { PencilSquareIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
 
 export default function EditarRendimiento({
+  Rendimiento,
   type = "edit",
   updateRendimiento,
-  Rendimiento,
 }) {
   const [isVisible, setIsVisible] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const toggleVisibility = () => setIsVisible(!isVisible);
-  const [fechaCreacion, setFechaCreacion] = useState(
-    new Date(Rendimiento.fecha_creacion)
-  );
-  const [error, setError] = useState(false);
-  const [ruta, setRuta] = useState("");
+  const [selectedCamion, setSelectedCamion] = useState(null);
+  const [origen, setOrigen] = useState("");
+  const [estado, setEstate] = useState(false);
   const [carga, setCarga] = useState("");
   const [peso, setPeso] = useState("");
+  const [destino, setDestino] = useState("");
+  const [camiones, setCamiones] = useState([]);
+  const [fechaCreacion, setFechaCreacion] = useState(new Date());
+  const [dataGeneral, setDataGeneral] = useState([]);
+  const toggleVisibility = () => setIsVisible(!isVisible);
+  const [error, setError] = useState(false);
+  const [selectedDataGeneralId, setSelectedDataGeneralId] = useState(null);
+  const [selectedDataGeneralId2, setSelectedDataGeneralId2] = useState(null);
   const [maxKilometraje, setMaxKilometraje] = useState(null);
   const [diferenciaKilometraje, setDiferenciaKilometraje] = useState(null);
   const [rendimientokmxgalon, setRendimientoxgalon] = useState(null);
   const [rendimientoEsperado, setRendimientoEsperado] = useState("");
   const [rendimientoCalculado, setRendimientoCalculado] = useState(null);
   const [excesoReal, setExcesoReal] = useState(null);
-  const [estado_rendimiento, setEstado_rendimiento] = useState(false);
+
+  // const handleDataGeneralChange = (event) => {
+  //   const selectedDataGeneralId = event.target.value;
+
+  //   // Busca la data general seleccionada en la lista de data general
+  //   const selectedDatageneral = dataGeneral.find(
+  //     (datageneral) => datageneral.id === parseInt(selectedDataGeneralId)
+  //   );
+
+  //   setSelectedDataGeneralId(selectedDatageneral);
+  //   console.log(selectedDataGeneralId);
+  // };
+
+  // const handleDataGeneralChange2 = (event) => {
+  //   const selectedDataGeneralId2 = event.target.value;
+
+  //   // Busca la data general seleccionada en la lista de data general
+  //   const selectedDatageneral = dataGeneral.find(
+  //     (datageneral) => datageneral.id === parseInt(selectedDataGeneralId2)
+  //   );
+
+  //   setSelectedDataGeneralId2(selectedDatageneral);
+  //   console.log(selectedDataGeneralId2);
+  // };
+
+  // // Función para buscar la data general asociada al camión seleccionado
+  // const handleBuscarDataGeneral = async () => {
+  //   if (selectedCamion) {
+  //     try {
+  //       const tokens = JSON.parse(localStorage.getItem("tokens"));
+  //       const res = await axios.get(
+  //         `${API_BASE_URL}/listado_datapendiente/?placa=${selectedCamion.placa}`,
+  //         {
+  //           headers: {
+  //             Authorization: `Bearer ${tokens.access}`,
+  //           },
+  //         }
+  //       );
+  //       setDataGeneral(res.data);
+  //     } catch (error) {
+  //       console.error(
+  //         "Error al obtener la lista de Data General pendiente:",
+  //         error
+  //       );
+  //     }
+  //   }
+  // };
+
   const handleNameChange = (e, fieldSetter) => {
     let value = e.target.value;
     // Restringir caracteres: solo letras y números
     value = value.replace(/[^a-zA-Z0-9-.]+/g, " ");
-    if (value.length > 250) {
-      value = value.substring(0, 250);
+    if (value.length > 100) {
+      value = value.substring(0, 100);
     }
     fieldSetter(value);
+  };
+
+  // // useEffect para cargar la lista de camiones
+  // useEffect(() => {
+  //   const obtenerListaCamiones = async () => {
+  //     try {
+  //       const tokens = JSON.parse(localStorage.getItem("tokens"));
+  //       const res = await axios.get(`${API_BASE_URL}/listado_camion/`, {
+  //         headers: {
+  //           Authorization: `Bearer ${tokens.access}`,
+  //         },
+  //       });
+  //       setCamiones(res.data);
+  //     } catch (error) {
+  //       console.error("Error al obtener la lista de camiones:", error);
+  //     }
+  //   };
+
+  //   obtenerListaCamiones();
+  // }, []);
+
+  // const handleCamionChange = (event) => {
+  //   const selectedCamionId = event.target.value;
+
+  //   // Busca el camión seleccionado en la lista de camiones
+  //   const selectedCamion = camiones.find(
+  //     (camion) => camion.id === parseInt(selectedCamionId)
+  //   );
+
+  //   // Actualiza el estado con el camión seleccionado
+  //   setSelectedCamion(selectedCamion);
+  // };
+
+  const handleSubmit = async () => {
+    // Validar campos
+    const fechaParaEnviar = new Date(fechaCreacion).toISOString();
+
+    try {
+      if ((type === "agregar" && excesoReal === 0) || excesoReal === null) {
+        // Configurar el encabezado con el token de acceso
+        const tokens = JSON.parse(localStorage.getItem("tokens"));
+        const accessToken = tokens?.access;
+
+        const headers = {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        };
+
+        const url = `${API_BASE_URL}/Rendimiento/${Rendimiento.id}/`;
+
+        const data = {
+          id_datageneral: Rendimiento.id_data_general,
+          fecha_tanqueo: fechaParaEnviar,
+          origen: origen,
+          destino: destino,
+          carga: carga,
+          peso: peso,
+          km_recorrido: diferenciaKilometraje,
+          rend_kmxglp: rendimientokmxgalon,
+          gl_esperado: rendimientoCalculado,
+          ren_esperado: rendimientoEsperado,
+          exceso_real: excesoReal,
+        };
+        console.log("enviar:", data);
+
+        // Agregar el encabezado a la solicitud
+        await toast.promise(axios.patch(url, data, { headers }), {
+          loading: "Actualizando...",
+          success: "Rendimiento Actualizado",
+          error: "Error al registrar Actualizado! Verifique los campos",
+        });
+      } else {
+        // Configurar el encabezado con el token de acceso
+        const tokens = JSON.parse(localStorage.getItem("tokens"));
+        const accessToken = tokens?.access;
+
+        const headers = {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        };
+
+        const url = `${API_BASE_URL}/Rendimiento/${Rendimiento.id}/`;
+
+        const data = {
+          id_datageneral: Rendimiento.id_data_general,
+          fecha_tanqueo: fechaParaEnviar,
+          origen: origen,
+          destino: destino,
+          carga: carga,
+          peso: peso,
+          km_recorrido: diferenciaKilometraje,
+          rend_kmxglp: rendimientokmxgalon,
+          gl_esperado: rendimientoCalculado,
+          ren_esperado: rendimientoEsperado,
+          exceso_real: excesoReal,
+        };
+        console.log("enviar:", data);
+
+        // Agregar el encabezado a la solicitud
+        await toast.promise(axios.patch(url, data, { headers }), {
+          loading: "Actualizando...",
+          success: "Rendimiento Actualizando",
+          error: "Error al Actualizar Rendimiento! Verifique los campos",
+        });
+
+        //     Actualizar el estado de la data general
+        const dataGeneralUpdateUrl = `${API_BASE_URL}/DataGeneral/${Rendimiento.id_data_general}/`;
+        const dataGeneralUpdateData = {
+          estado_rendimiento: estado, // Cambiar el estado a true
+        };
+
+        // Enviar la solicitud para actualizar la data general
+        await axios.patch(dataGeneralUpdateUrl, dataGeneralUpdateData, {
+          headers,
+        });
+      }
+
+      // Luego de editar el usuario, llama a la función de actualización
+      updateRendimiento();
+      onClose();
+      handlelimpiar();
+    } catch (error) {
+      console.error("Error en la solicitud:", error.message);
+    }
+  };
+
+  const handlelimpiar = () => {
+    setFechaCreacion(new Date()); // Restablecer la fecha de creación
+    setError(false); // Restablecer el estado de error a falso
+    onClose(); // Cerrar el modal
+  };
+
+  const handleFechaCreacionChange = (event) => {
+    const nuevaFecha = event.target.value;
+
+    // Actualizar el estado con la nueva fecha
+    setFechaCreacion(new Date(nuevaFecha));
+  };
+
+  // Función para calcular la diferencia de kilometraje
+  // const calcularDiferenciaKilometraje = () => {
+  //   const diferencia =
+  //     selectedDataGeneralId2.kilometraje - selectedDataGeneralId.kilometraje;
+  //   // const rendimiento = diferencia / selectedDataGeneralId.galones;
+  //   setDiferenciaKilometraje(diferencia.toFixed(1));
+  //   // setRendimientoxgalon(rendimiento.toFixed(2));
+  // };
+  const calcularValores = () => {
+    const rendimiento = diferenciaKilometraje / Rendimiento.galones;
+    setRendimientoxgalon(rendimiento.toFixed(2));
   };
 
   // Función para manejar cambios en el campo "Rendimiento esperado"
@@ -60,170 +266,29 @@ export default function EditarRendimiento({
   const calcularRendimientoEsperado = () => {
     if (rendimientoEsperado && diferenciaKilometraje !== null) {
       const division = diferenciaKilometraje / parseFloat(rendimientoEsperado);
+      const exceso = Rendimiento.galones - division;
       setRendimientoCalculado(division.toFixed(2));
-    } else {
-      setRendimientoCalculado(null);
-    }
-  };
-
-  const calcularDiferenciaKilometraje = () => {
-    if (parseInt(Rendimiento.kilometraje) === parseInt(maxKilometraje)) {
-      const diferencia = Rendimiento.kilometraje;
-      setDiferenciaKilometraje(diferencia.toFixed(1));
-    } else {
-      const kmRendimiento = parseInt(Rendimiento.kilometraje);
-      const diferencia = kmRendimiento - maxKilometraje;
-      setDiferenciaKilometraje(diferencia.toFixed(1));
-    }
-  };
-
-  // Función para calcular redimiento KM X GALON
-  const calcularRendimientoXgalon = () => {
-    if (Rendimiento.galones && diferenciaKilometraje != null) {
-      const division = diferenciaKilometraje / Rendimiento.galones;
-      setRendimientoxgalon(division.toFixed(2));
-    } else {
-      setRendimientoxgalon(0);
-    }
-  };
-
-  const handleSubmit = async () => {
-    // Validar campos
-    const fechaParaEnviar = new Date(fechaCreacion).toISOString();
-
-    try {
-      if (type === "edit") {
-        // Configurar el encabezado con el token de acceso
-        const tokens = JSON.parse(localStorage.getItem("tokens"));
-        const accessToken = tokens?.access;
-
-        const headers = {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        };
-
-        const url = `${API_BASE_URL}/Rendimiento/${Rendimiento.rendimiento.id}/`;
-
-        const data = {
-          id_datageneral: Rendimiento.id,
-          fecha_tanqueo: fechaParaEnviar,
-          km_recorrido: diferenciaKilometraje,
-          rend_kmxglp: rendimientokmxgalon,
-          gl_esperado: rendimientoCalculado,
-          ren_esperado: rendimientoEsperado,
-          exceso_real: excesoReal,
-        };
-        console.log("enviar:", data);
-
-        // Agregar el encabezado a la solicitud
-        await toast.promise(axios.patch(url, data, { headers }), {
-          loading: "Actualizando...",
-          success: "Rendimiento actualizado",
-          error: "Error al actualizar Rendimiento! Verifique los campos",
-        });
-
-        // Actualizar el estado de la data general
-        const dataGeneralUpdateUrl = `${API_BASE_URL}/DataGeneral/${Rendimiento.rendimiento.id_datageneral}/`;
-        const dataGeneralUpdateData = {
-          estado_rendimiento: estado_rendimiento, // Cambiar el estado a true
-        };
-
-        // Enviar la solicitud para actualizar la data general
-        await axios.patch(dataGeneralUpdateUrl, dataGeneralUpdateData, {
-          headers,
-        });
-      }
-      // Luego de editar el usuario, llama a la función de actualización
-      updateRendimiento();
-      onClose();
-      handlelimpiar();
-    } catch (error) {
-      console.error("Error en la solicitud:", error.message);
-    }
-  };
-
-  const validateField = (value, fieldName) => {
-    if (value.trim() === "") {
-      // Si el campo está vacío, mostrar el mensaje de error
-      setError(true);
-      toast.error(`Ingrese el ${fieldName} correctamente`);
-      return false;
-    }
-    // Limpiar el mensaje de error si el campo es válido
-    setError(false);
-    return true;
-  };
-
-  const handlelimpiar = () => {
-    setError(false); // Restablecer el estado de error a falso
-    onClose(); // Cerrar el modal
-  };
-
-  const handleFechaCreacionChange = (event) => {
-    const nuevaFecha = event.target.value;
-
-    // Actualizar el estado con la nueva fecha
-    setFechaCreacion(new Date(Rendimiento.fechaCreacion));
-  };
-
-  useEffect(() => {
-    // Definimos una función asincrónica dentro de useEffect para realizar la solicitud GET
-    const obtenerMaxKilometraje = async () => {
-      try {
-        const response = await axios.get(
-          `${API_BASE_URL}/maxKM/?placa=${Rendimiento.placa_nombre}`
-        );
-
-        if (response.status === 200) {
-          // Si la solicitud es exitosa, actualizamos el estado con los datos recibidos
-          setMaxKilometraje(response.data.max_kilometraje);
-        } else {
-          throw new Error("Error en la solicitud");
-        }
-      } catch (error) {
-        // Manejamos los errores
-        console.error("Error:", error.message);
-      }
-    };
-
-    // Llamamos a la función para realizar la solicitud cuando el componente se monta
-    obtenerMaxKilometraje();
-  }, []);
-
-  useEffect(() => {
-    // Calcular la diferencia de kilometraje cuando Rendimiento.kilometraje o maxKilometraje cambien
-    // calcularDiferenciaKilometraje();
-    calcularRendimientoXgalon();
-    calcularRendimientoEsperado();
-    // Verifica que tanto galones como GL esperado no sean nulos
-    if (Rendimiento.galones !== null && rendimientoCalculado !== null) {
-      // Calcula el exceso real dividiendo los galones entre el GL esperado
-      const exceso = Rendimiento.galones - parseFloat(rendimientoCalculado);
-      // Actualiza el estado con el resultado del cálculo
       setExcesoReal(exceso.toFixed(2));
     } else {
-      // Si alguno de los valores es nulo, establece el exceso real como null
+      setRendimientoCalculado(null);
       setExcesoReal(null);
     }
-  }, [
-    Rendimiento.kilometraje,
-    maxKilometraje,
-    Rendimiento.galones,
-    rendimientokmxgalon,
-    rendimientoEsperado,
-    diferenciaKilometraje,
-    rendimientoCalculado,
-  ]);
+  };
 
   useEffect(() => {
     // Configurar el estado inicial al abrir el modal
     if (type === "edit" && Rendimiento) {
-      // setRuta(Rendimiento.rendimiento.ruta);
-      // setCarga(Rendimiento.rendimiento.carga);
-      // setPeso(Rendimiento.rendimiento.peso);
-      setRendimientoEsperado(Rendimiento.rendimiento.ren_esperado);
-      setEstado_rendimiento(Rendimiento.estado_rendimiento);
-      setDiferenciaKilometraje(Rendimiento.rendimiento.km_recorrido);
+      setFechaCreacion(new Date(Rendimiento.fecha_rendimiento));
+      setEstate(Rendimiento.estado_rendimiento);
+      setOrigen(Rendimiento.origen);
+      setDestino(Rendimiento.destino);
+      setCarga(Rendimiento.carga);
+      setPeso(Rendimiento.peso);
+      setDiferenciaKilometraje(Rendimiento.km_recorrido);
+      setExcesoReal(Rendimiento.exceso_real);
+      setRendimientoCalculado(Rendimiento.gl_esperado),
+        setRendimientoxgalon(Rendimiento.rend_kmxglp);
+      setRendimientoEsperado(Rendimiento.ren_esperado);
     }
   }, [type, Rendimiento]);
 
@@ -246,125 +311,132 @@ export default function EditarRendimiento({
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                {type === "edit" ? "Agregar Rendimiento" : "Editar Rendimiento"}
+                {type === "edit"
+                  ? "Editar Rendimineto"
+                  : "Agregar Data general"}
               </ModalHeader>
               <ModalBody>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {/* Primera columna */}
-                  <div>
-                    <Input
-                      isDisabled
-                      type="date"
-                      label="Fecha tanqueo"
-                      value={fechaCreacion.toISOString().split("T")[0]}
-                      onChange={handleFechaCreacionChange}
-                      className="mb-2"
-                    />
-                    <Input
-                      isDisabled
-                      type="text"
-                      label="Camion - Conductor"
-                      defaultValue={`${Rendimiento.placa_nombre} - ${Rendimiento.conductor_nombre} ${Rendimiento.conductor_apellido}`}
-                      className="mb-2"
-                    />
-                    <Input
-                      isDisabled
-                      type="text"
-                      label="Galones"
-                      defaultValue={Rendimiento.galones}
-                      className="mb-2"
-                    />
-                    {maxKilometraje !== null ? (
-                      <p className="mb-2">
-                        El máximo kilometraje para la placa{" "}
-                        {Rendimiento.placa_nombre} es: {maxKilometraje}
-                      </p>
-                    ) : (
-                      <p>Cargando...</p>
-                    )}
-                    {/* <Button
-                      color="success"
-                      onClick={calcularDiferenciaKilometraje}
-                      className="mb-2"
-                    >
-                      Calcular Diferencia Kilometraje
-                    </Button> */}
-                    <Input
-                      type="text"
-                      label="KM-Recorridos"
-                      value={diferenciaKilometraje}
-                      className="mb-2"
-                      onChange={(e) =>
-                        handleNameChange(e, setDiferenciaKilometraje)
-                      }
-                    />
-                    <Input
-                      isDisabled
-                      type="text"
-                      label="Rendimiento KM x GL"
-                      value={rendimientokmxgalon}
-                    />
-                    <Switch
-                      defaultSelected={estado_rendimiento}
-                      onValueChange={setEstado_rendimiento}
-                    >
-                      Estado rendimiento
-                    </Switch>
-                  </div>
+                <div className="flex relative grid grid-cols-1 md:grid-cols-2 gap-1">
+                  <span> ID: {Rendimiento.id}</span>
+                  <span> Camion: {Rendimiento.placa_nombre}</span>
+                  <span>
+                    {" "}
+                    conductor: {Rendimiento.conductor_nombre}{" "}
+                    {Rendimiento.conductor_apellido}
+                  </span>
+                  <Input
+                    type="date"
+                    value={fechaCreacion.toISOString().split("T")[0]} // Establecer el valor del Input con la fecha actual
+                    onChange={handleFechaCreacionChange} // Manejar el cambio en la fecha
+                  />
 
-                  {/* Segunda columna */}
-                  <div>
-                    {/* <Textarea
-                      label="Ruta"
-                      isInvalid={error}
-                      errorMessage={error && "Ingrese la ruta correctamente"}
-                      value={ruta}
-                      onChange={(e) => handleNameChange(e, setRuta)}
-                      className="mb-2"
-                    />
-                    <Input
-                      label="Carga"
-                      isInvalid={error}
-                      errorMessage={error && "Ingrese la carga correctamente"}
-                      value={carga}
-                      onChange={(e) => handleNameChange(e, setCarga)}
-                      className="mb-2"
-                    />
-                    <Input
-                      label="Peso"
-                      isInvalid={error}
-                      errorMessage={error && "Ingrese el peso correctamente"}
-                      value={peso}
-                      onChange={(e) => handleNameChange(e, setPeso)}
-                      className="mb-2"
-                    /> */}
-                    <Input
-                      label="Rendimiento esperado"
-                      value={rendimientoEsperado}
-                      onChange={handleRendimientoEsperadoChange}
-                      className="mb-2"
-                    />
-                    {/* Mostrar el rendimiento calculado */}
-                    {rendimientoCalculado !== null && (
-                      <p className="mb-2">
-                        GL esperado: {rendimientoCalculado}
-                      </p>
-                    )}
-                    <Input
-                      isDisabled
-                      type="text"
-                      label="Exceso Real"
-                      value={excesoReal !== null ? excesoReal : "Calculando..."}
-                      className={
-                        excesoReal !== null
-                          ? excesoReal > 0
-                            ? "text-red-500"
-                            : "text-blue-500"
-                          : ""
-                      }
-                    />
-                  </div>
+                  <Input
+                    label="Origen"
+                    isInvalid={error}
+                    errorMessage={error && "Ingrese el Origen correctamente"}
+                    value={origen}
+                    onChange={(e) => handleNameChange(e, setOrigen)}
+                  ></Input>
+                  <Input
+                    label="Destino"
+                    isInvalid={error}
+                    errorMessage={error && "Ingrese el Destino correctamente"}
+                    value={destino}
+                    onChange={(e) => handleNameChange(e, setDestino)}
+                  ></Input>
+                  <Input
+                    label="Carga"
+                    isInvalid={error}
+                    errorMessage={error && "Ingrese la carga correctamente"}
+                    value={carga}
+                    onChange={(e) => handleNameChange(e, setCarga)}
+                    className="mb-2"
+                  />
+                  <Input
+                    label="Peso"
+                    isInvalid={error}
+                    errorMessage={error && "Ingrese el peso correctamente"}
+                    value={peso}
+                    onChange={(e) => handleNameChange(e, setPeso)}
+                    className="mb-2"
+                  />
+                  <Switch defaultSelected={estado} onValueChange={setEstate}>
+                    Estado
+                  </Switch>
                 </div>
+                <Accordion variant="light">
+                  <AccordionItem
+                    key="1"
+                    aria-label="Accordion 1"
+                    title="Datos rendimiento"
+                  >
+                    <div className="flex relative grid grid-cols-1 md:grid-cols-2  gap-1 ">
+                      {/* <Button
+                        color="success"
+                        onClick={calcularDiferenciaKilometraje}
+                        className="mb-2"
+                      >
+                        Calcular Diferencia Kilometraje
+                      </Button> */}
+                      <Input
+                        type="text"
+                        label="KM-Recorridos"
+                        value={diferenciaKilometraje}
+                        onChange={(e) =>
+                          handleNameChange(e, setDiferenciaKilometraje)
+                        }
+                        className="mb-2"
+                      />
+                      <Button
+                        color="success"
+                        onClick={calcularValores}
+                        className="mb-2"
+                      >
+                        Calcular valor km x gl
+                      </Button>
+                      <Input
+                        isDisabled
+                        type="text"
+                        label="Rendimiento KM x GL"
+                        value={rendimientokmxgalon}
+                      />
+                      <Button
+                        color="success"
+                        onClick={calcularRendimientoEsperado}
+                        className="mb-2"
+                      >
+                        Calcular rendimiento
+                      </Button>
+                      <Input
+                        label="Rendimiento esperado"
+                        value={rendimientoEsperado}
+                        onChange={handleRendimientoEsperadoChange}
+                        className="mb-2"
+                      />
+                      {/* Mostrar el rendimiento calculado */}
+                      {rendimientoCalculado !== null && (
+                        <p className="mb-2">
+                          GL esperado: {rendimientoCalculado}
+                        </p>
+                      )}
+                      <Input
+                        isDisabled
+                        type="text"
+                        label="Exceso Real"
+                        value={
+                          excesoReal !== null ? excesoReal : "Calculando..."
+                        }
+                        className={
+                          excesoReal !== null
+                            ? excesoReal > 0
+                              ? "text-red-500"
+                              : "text-blue-500"
+                            : ""
+                        }
+                      />
+                    </div>
+                  </AccordionItem>
+                </Accordion>
               </ModalBody>
               <ModalFooter>
                 <Button
