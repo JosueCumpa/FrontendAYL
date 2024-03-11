@@ -38,6 +38,11 @@ export default function EditarRendimiento({
   const [camiones, setCamiones] = useState([]);
   const [fechaCreacion, setFechaCreacion] = useState(new Date());
   const [dataGeneral, setDataGeneral] = useState([]);
+  const [productos, setProductos] = useState([]);
+  const [ciudades, setCiudades] = useState([]);
+  const [selectedProducto, setSelectedProducto] = useState(null);
+  const [selectedCiudad, setSelectedCiudad] = useState(null);
+  const [selectedCiudad2, setSelectedCiudad2] = useState(null);
   const toggleVisibility = () => setIsVisible(!isVisible);
   const [error, setError] = useState(false);
   const [selectedDataGeneralId, setSelectedDataGeneralId] = useState(null);
@@ -49,52 +54,87 @@ export default function EditarRendimiento({
   const [rendimientoCalculado, setRendimientoCalculado] = useState(null);
   const [excesoReal, setExcesoReal] = useState(null);
 
-  // const handleDataGeneralChange = (event) => {
-  //   const selectedDataGeneralId = event.target.value;
+  useEffect(() => {
+    const obtenerListaCiudades = async () => {
+      try {
+        const tokens = JSON.parse(localStorage.getItem("tokens"));
+        const res = await axios.get(`${API_BASE_URL}/ciudad/`, {
+          headers: {
+            Authorization: `Bearer ${tokens.access}`,
+          },
+        });
+        setCiudades(res.data);
+      } catch (error) {
+        console.error("Error al obtener la lista de ciudades:", error);
+      }
+    };
+    obtenerListaCiudades();
+  }, []);
 
-  //   // Busca la data general seleccionada en la lista de data general
-  //   const selectedDatageneral = dataGeneral.find(
-  //     (datageneral) => datageneral.id === parseInt(selectedDataGeneralId)
-  //   );
+  const handleCiudadChange = (event) => {
+    const selectedCiudadId = event.target.value;
 
-  //   setSelectedDataGeneralId(selectedDatageneral);
-  //   console.log(selectedDataGeneralId);
-  // };
+    // Busca el camión seleccionado en la lista de camiones
+    const selectedCiudad = ciudades.find(
+      (ciudad) => ciudad.id === parseInt(selectedCiudadId)
+    );
 
-  // const handleDataGeneralChange2 = (event) => {
-  //   const selectedDataGeneralId2 = event.target.value;
+    // Actualiza el estado con el camión seleccionado
+    setSelectedCiudad(selectedCiudad);
+    setOrigen(selectedCiudad.nombre);
+  };
 
-  //   // Busca la data general seleccionada en la lista de data general
-  //   const selectedDatageneral = dataGeneral.find(
-  //     (datageneral) => datageneral.id === parseInt(selectedDataGeneralId2)
-  //   );
+  const handleCiudadChange2 = (event) => {
+    const selectedCiudadId = event.target.value;
 
-  //   setSelectedDataGeneralId2(selectedDatageneral);
-  //   console.log(selectedDataGeneralId2);
-  // };
+    // Busca el camión seleccionado en la lista de camiones
+    const selectedCiudad2 = ciudades.find(
+      (ciudad) => ciudad.id === parseInt(selectedCiudadId)
+    );
 
-  // // Función para buscar la data general asociada al camión seleccionado
-  // const handleBuscarDataGeneral = async () => {
-  //   if (selectedCamion) {
-  //     try {
-  //       const tokens = JSON.parse(localStorage.getItem("tokens"));
-  //       const res = await axios.get(
-  //         `${API_BASE_URL}/listado_datapendiente/?placa=${selectedCamion.placa}`,
-  //         {
-  //           headers: {
-  //             Authorization: `Bearer ${tokens.access}`,
-  //           },
-  //         }
-  //       );
-  //       setDataGeneral(res.data);
-  //     } catch (error) {
-  //       console.error(
-  //         "Error al obtener la lista de Data General pendiente:",
-  //         error
-  //       );
-  //     }
-  //   }
-  // };
+    // Actualiza el estado con el camión seleccionado
+    setSelectedCiudad2(selectedCiudad2);
+    setDestino(selectedCiudad2.nombre);
+  };
+
+  // useEffect para cargar la lista de Productos
+  useEffect(() => {
+    const obtenerListaProductos = async () => {
+      try {
+        const tokens = JSON.parse(localStorage.getItem("tokens"));
+        const res = await axios.get(`${API_BASE_URL}/Producto/`, {
+          headers: {
+            Authorization: `Bearer ${tokens.access}`,
+          },
+        });
+        setProductos(res.data);
+      } catch (error) {
+        console.error("Error al obtener la lista de productos:", error);
+      }
+    };
+
+    obtenerListaProductos();
+  }, []);
+
+  const handleProductosChange = (event) => {
+    const selectedProductoId = event.target.value;
+
+    // Busca el camión seleccionado en la lista de camiones
+    const selectedProducto = productos.find(
+      (producto) => producto.id === parseInt(selectedProductoId)
+    );
+
+    // Actualiza el estado con el camión seleccionado
+    setSelectedProducto(selectedProducto);
+    setCarga(selectedProducto.nombre);
+    if (selectedProducto.nombre === "VACIO") {
+      // Si el nombre del producto está vacío, establece setPeso como 0
+      setPeso("0");
+    } else {
+      // De lo contrario, deja que el usuario ingrese un valor
+      setPeso("");
+    }
+  };
 
   const handleNameChange = (e, fieldSetter) => {
     let value = e.target.value;
@@ -105,37 +145,6 @@ export default function EditarRendimiento({
     }
     fieldSetter(value);
   };
-
-  // // useEffect para cargar la lista de camiones
-  // useEffect(() => {
-  //   const obtenerListaCamiones = async () => {
-  //     try {
-  //       const tokens = JSON.parse(localStorage.getItem("tokens"));
-  //       const res = await axios.get(`${API_BASE_URL}/listado_camion/`, {
-  //         headers: {
-  //           Authorization: `Bearer ${tokens.access}`,
-  //         },
-  //       });
-  //       setCamiones(res.data);
-  //     } catch (error) {
-  //       console.error("Error al obtener la lista de camiones:", error);
-  //     }
-  //   };
-
-  //   obtenerListaCamiones();
-  // }, []);
-
-  // const handleCamionChange = (event) => {
-  //   const selectedCamionId = event.target.value;
-
-  //   // Busca el camión seleccionado en la lista de camiones
-  //   const selectedCamion = camiones.find(
-  //     (camion) => camion.id === parseInt(selectedCamionId)
-  //   );
-
-  //   // Actualiza el estado con el camión seleccionado
-  //   setSelectedCamion(selectedCamion);
-  // };
 
   const handleSubmit = async () => {
     // Validar campos
@@ -231,26 +240,31 @@ export default function EditarRendimiento({
   };
 
   const handlelimpiar = () => {
-    setFechaCreacion(new Date()); // Restablecer la fecha de creación
-    setError(false); // Restablecer el estado de error a falso
-    onClose(); // Cerrar el modal
+    setFechaCreacion(new Date());
+    setRendimientoEsperado("");
+    setRendimientoCalculado(null);
+    setCarga("");
+    setOrigen("");
+    setDestino("");
+
+    setPeso("");
+    setSelectedDataGeneralId(null); // Aquí debes establecer el valor de selectedDataGeneralId como null
+    setDiferenciaKilometraje("");
+    setMaxKilometraje("");
+    setExcesoReal(null);
+    setError(false);
+    onClose(); // Cerrar el modal // Cerrar el modal
   };
 
   const handleFechaCreacionChange = (event) => {
-    const nuevaFecha = event.target.value;
-
-    // Actualizar el estado con la nueva fecha
-    setFechaCreacion(new Date(nuevaFecha));
+    const selectedDate = new Date(event.target.value);
+    // Ajustar la fecha según la zona horaria local
+    const adjustedDate = new Date(
+      selectedDate.getTime() + selectedDate.getTimezoneOffset() * 60000
+    );
+    setFechaCreacion(adjustedDate);
   };
 
-  // Función para calcular la diferencia de kilometraje
-  // const calcularDiferenciaKilometraje = () => {
-  //   const diferencia =
-  //     selectedDataGeneralId2.kilometraje - selectedDataGeneralId.kilometraje;
-  //   // const rendimiento = diferencia / selectedDataGeneralId.galones;
-  //   setDiferenciaKilometraje(diferencia.toFixed(1));
-  //   // setRendimientoxgalon(rendimiento.toFixed(2));
-  // };
   const calcularValores = () => {
     const rendimiento = diferenciaKilometraje / Rendimiento.galones;
     setRendimientoxgalon(rendimiento.toFixed(2));
@@ -280,15 +294,16 @@ export default function EditarRendimiento({
     if (type === "edit" && Rendimiento) {
       setFechaCreacion(new Date(Rendimiento.fecha_rendimiento));
       setEstate(Rendimiento.estado_rendimiento);
+      setCarga(Rendimiento.carga);
       setOrigen(Rendimiento.origen);
       setDestino(Rendimiento.destino);
-      setCarga(Rendimiento.carga);
       setPeso(Rendimiento.peso);
       setDiferenciaKilometraje(Rendimiento.km_recorrido);
       setExcesoReal(Rendimiento.exceso_real);
-      setRendimientoCalculado(Rendimiento.gl_esperado),
-        setRendimientoxgalon(Rendimiento.rend_kmxglp);
+      setRendimientoCalculado(Rendimiento.gl_esperado);
+      setRendimientoxgalon(Rendimiento.rend_kmxglp);
       setRendimientoEsperado(Rendimiento.ren_esperado);
+      console.log(selectedCiudad);
     }
   }, [type, Rendimiento]);
 
@@ -330,28 +345,81 @@ export default function EditarRendimiento({
                     onChange={handleFechaCreacionChange} // Manejar el cambio en la fecha
                   />
 
-                  <Input
-                    label="Origen"
-                    isInvalid={error}
-                    errorMessage={error && "Ingrese el Origen correctamente"}
-                    value={origen}
-                    onChange={(e) => handleNameChange(e, setOrigen)}
-                  ></Input>
-                  <Input
-                    label="Destino"
-                    isInvalid={error}
-                    errorMessage={error && "Ingrese el Destino correctamente"}
-                    value={destino}
-                    onChange={(e) => handleNameChange(e, setDestino)}
-                  ></Input>
-                  <Input
-                    label="Carga"
-                    isInvalid={error}
-                    errorMessage={error && "Ingrese la carga correctamente"}
-                    value={carga}
-                    onChange={(e) => handleNameChange(e, setCarga)}
-                    className="mb-2"
-                  />
+                  <div className="flex relative grid grid-cols-1 md:grid-cols-1  gap-1 ">
+                    <Select
+                      items={ciudades}
+                      label="Selecciona ciudad de origen"
+                      variant="bordered"
+                      onChange={handleCiudadChange}
+                    >
+                      {(ciudad) => (
+                        <SelectItem
+                          key={ciudad.id}
+                          textValue={`${ciudad.nombre}`}
+                        >
+                          <div className="flex gap-2 items-center">
+                            <span>{ciudad.nombre}</span>
+                          </div>
+                        </SelectItem>
+                      )}
+                    </Select>
+                    <span>Ciudad seleccionada: {origen}</span>
+                  </div>
+                  <div className="flex relative grid grid-cols-1 md:grid-cols-1  gap-1 ">
+                    <Select
+                      items={ciudades}
+                      label="Selecciona ciudad de Destino"
+                      variant="bordered"
+                      onChange={handleCiudadChange2}
+                    >
+                      {(ciudad) => (
+                        <SelectItem
+                          key={ciudad.id}
+                          textValue={`${ciudad.nombre}`}
+                        >
+                          <div className="flex gap-2 items-center">
+                            <span>{ciudad.nombre}</span>
+                          </div>
+                        </SelectItem>
+                      )}
+                    </Select>
+                    <span>Ciudad seleccionada: {destino}</span>
+                  </div>
+                  {/* <Input
+                label="Destino"
+                isInvalid={error}
+                errorMessage={error && "Ingrese el Destino correctamente"}
+                value={destino}
+                onChange={(e) => handleNameChange(e, setDestino)}
+              ></Input> */}
+                  {/* <Input
+                label="Carga"
+                isInvalid={error}
+                errorMessage={error && "Ingrese la carga correctamente"}
+                value={carga}
+                onChange={(e) => handleNameChange(e, setCarga)}
+                className="mb-2"
+              /> */}
+                  <div className="flex relative grid grid-cols-1 md:grid-cols-1  gap-1 ">
+                    <Select
+                      items={productos}
+                      label="Selecciona carga"
+                      variant="bordered"
+                      onChange={handleProductosChange}
+                    >
+                      {(producto) => (
+                        <SelectItem
+                          key={producto.id}
+                          textValue={`${producto.nombre}`}
+                        >
+                          <div className="flex gap-2 items-center">
+                            <span>{producto.nombre}</span>
+                          </div>
+                        </SelectItem>
+                      )}
+                    </Select>
+                    <span>Producto seleccionado: {carga}</span>
+                  </div>
                   <Input
                     label="Peso"
                     isInvalid={error}

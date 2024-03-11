@@ -174,10 +174,12 @@ export default function EditarData({
   };
 
   const handleFechaCreacionChange = (event) => {
-    const nuevaFecha = event.target.value;
-
-    // Actualizar el estado con la nueva fecha
-    setFechaCreacion(new Date(nuevaFecha));
+    const selectedDate = new Date(event.target.value);
+    // Ajustar la fecha según la zona horaria local
+    const adjustedDate = new Date(
+      selectedDate.getTime() + selectedDate.getTimezoneOffset() * 60000
+    );
+    setFechaCreacion(adjustedDate);
   };
 
   useEffect(() => {

@@ -29,7 +29,7 @@ export default function AgregarData({ type = "agregar", updateDataGeneral }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toggleVisibility = () => setIsVisible(!isVisible);
   const [placa, setPlaca] = useState("");
-  const [estate, setEstate] = useState("");
+  const [estate, setEstate] = useState(false);
   const [estado, setEstado] = useState("P");
   // const [detalle, setDetalle] = useState("");
   const [operacion, setOperacion] = useState("");
@@ -80,7 +80,7 @@ export default function AgregarData({ type = "agregar", updateDataGeneral }) {
 
   const handleSubmit = async () => {
     // Validar campos
-    const fechaParaEnviar = new Date(fechaCreacion).toISOString();
+    const fechaParaEnviar = new Date(fechaCreacion).toISOString().split("T")[0];
 
     try {
       if (type === "agregar") {
@@ -100,7 +100,7 @@ export default function AgregarData({ type = "agregar", updateDataGeneral }) {
           placa: selectedCamion.id,
           conductor: selectedCamion.conductor_id,
           galones: galones,
-          producto: selectedProducto.id,
+          producto: 1,
           documento: documento,
           precio: precio,
           total: total,
@@ -161,7 +161,7 @@ export default function AgregarData({ type = "agregar", updateDataGeneral }) {
     setSelectedGrifo(null); // Reiniciar el grifo seleccionado
     setSelectedBanco(null); // Reiniciar el banco seleccionado
     setOperacionCompleta(""); // Reiniciar la operación completa
-    setEstate("");
+    setEstate(false);
     setFechaCreacion(new Date()); // Restablecer la fecha de creación
     setError(false); // Restablecer el estado de error a falso
     onClose(); // Cerrar el modal
@@ -218,10 +218,15 @@ export default function AgregarData({ type = "agregar", updateDataGeneral }) {
   };
 
   const handleFechaCreacionChange = (event) => {
-    const nuevaFecha = event.target.value;
+    const selectedDate = new Date(event.target.value);
+    // Ajustar la fecha según la zona horaria local
+    const adjustedDate = new Date(
+      selectedDate.getTime() + selectedDate.getTimezoneOffset() * 60000
+    );
 
     // Actualizar el estado con la nueva fecha
-    setFechaCreacion(new Date(nuevaFecha));
+    setFechaCreacion(adjustedDate);
+    console.log(fechaCreacion);
   };
 
   useEffect(() => {
@@ -396,7 +401,7 @@ export default function AgregarData({ type = "agregar", updateDataGeneral }) {
                       )}
                     </Select>
                   </div>
-                  <div className="flex relative grid grid-cols-1 md:grid-cols-1  gap-1 ">
+                  {/* <div className="flex relative grid grid-cols-1 md:grid-cols-1  gap-1 ">
                     <Select
                       items={productos}
                       label="Selecciona un producto"
@@ -414,7 +419,7 @@ export default function AgregarData({ type = "agregar", updateDataGeneral }) {
                         </SelectItem>
                       )}
                     </Select>
-                  </div>
+                  </div> */}
                   <Input
                     label="documento"
                     isInvalid={error}

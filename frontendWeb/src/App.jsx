@@ -12,6 +12,7 @@ import DataGeneral from "./components/DataGeneral/DataGeneral";
 import Banco from "./components/Banco/Banco";
 import Rendimiento from "./components/Rendimiento/Rendimiento";
 import Dashboard from "./components/Dashboard";
+import Ciudades from "./components/Ciudad/ciudades";
 import NotFound from "./components/NotFound";
 
 import { Toaster } from "react-hot-toast";
@@ -99,6 +100,14 @@ function App() {
             element={
               <PrivateRoute opgroup="true">
                 <Rendimiento />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="ciudad"
+            element={
+              <PrivateRoute opgroup="true">
+                <Ciudades />
               </PrivateRoute>
             }
           />

@@ -76,7 +76,7 @@ const Rendimiento = () => {
         // console.log(res.data);
         // Aplicar filtro de búsqueda fechas
         const filteredByDate = filteredItems.filter((item) => {
-          const fechaCreacion = new Date(item.fecha_creacion)
+          const fechaCreacion = new Date(item.fecha_rendimiento)
             .toISOString()
             .split("T")[0];
           return (
@@ -300,6 +300,9 @@ const Rendimiento = () => {
             {/* <TableColumn key="id" allowsSorting>
               id
             </TableColumn> */}
+            <TableColumn key="id" allowsSorting>
+              ID.T
+            </TableColumn>
             <TableColumn key="fecha_tanqueo" allowsSorting>
               F. Tanqueo
             </TableColumn>
@@ -311,10 +314,10 @@ const Rendimiento = () => {
               Periodo
             </TableColumn>
             <TableColumn key="placa" allowsSorting>
-              Placa
+              Placa camion
             </TableColumn>
             <TableColumn key="conductor" allowsSorting>
-              Conductor
+              Nombre conductor
             </TableColumn>
 
             <TableColumn key="origen" allowsSorting>
@@ -356,7 +359,6 @@ const Rendimiento = () => {
             <TableColumn key="acciones" allowsSorting>
               Acciones
             </TableColumn>
-            <TableColumn key=" " allowsSorting></TableColumn>
           </TableHeader>
           <TableBody
             items={list.items.slice(
@@ -369,6 +371,7 @@ const Rendimiento = () => {
             {(item) => (
               <TableRow key={item?.id}>
                 {/* <TableCell>{item?.id}</TableCell> */}
+                <TableCell>{item?.id_data_general}</TableCell>
                 <TableCell>
                   {item?.fecha_rendimiento &&
                     format(new Date(item?.fecha_rendimiento), "dd-MM-yyyy")}
@@ -412,7 +415,7 @@ const Rendimiento = () => {
                     {item?.estado_rendimiento ? "Finalizado" : "Pendiente"}
                   </Chip>
                 </TableCell>
-                <TableCell>
+                <TableCell className="flex relative">
                   <EditarRendimiento
                     updateRendimiento={updateRendimiento}
                     Rendimiento={item}
@@ -422,7 +425,6 @@ const Rendimiento = () => {
                     Rendimiento={item}
                   ></EliminarRendimiendo>
                 </TableCell>
-                <TableCell></TableCell>
               </TableRow>
             )}
           </TableBody>

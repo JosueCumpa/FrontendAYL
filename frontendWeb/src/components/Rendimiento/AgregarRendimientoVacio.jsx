@@ -33,12 +33,16 @@ export default function AgregarRendimientoVacio({
   const [peso, setPeso] = useState("");
   const [destino, setDestino] = useState("");
   const [camiones, setCamiones] = useState([]);
+  const [productos, setProductos] = useState([]);
+  const [ciudades, setCiudades] = useState([]);
+  const [selectedProducto, setSelectedProducto] = useState(null);
+  const [selectedCiudad, setSelectedCiudad] = useState(null);
+  const [selectedCiudad2, setSelectedCiudad2] = useState(null);
   const [fechaCreacion, setFechaCreacion] = useState(new Date());
   const [dataGeneral, setDataGeneral] = useState([]);
   const toggleVisibility = () => setIsVisible(!isVisible);
   const [error, setError] = useState(false);
   const [selectedDataGeneralId, setSelectedDataGeneralId] = useState(null);
-  const [selectedDataGeneralId2, setSelectedDataGeneralId2] = useState(null);
   const [maxKilometraje, setMaxKilometraje] = useState(null);
   const [diferenciaKilometraje, setDiferenciaKilometraje] = useState(null);
   const [rendimientokmxgalon, setRendimientoxgalon] = useState(null);
@@ -56,18 +60,6 @@ export default function AgregarRendimientoVacio({
 
     setSelectedDataGeneralId(selectedDatageneral);
     console.log(selectedDataGeneralId);
-  };
-
-  const handleDataGeneralChange2 = (event) => {
-    const selectedDataGeneralId2 = event.target.value;
-
-    // Busca la data general seleccionada en la lista de data general
-    const selectedDatageneral = dataGeneral.find(
-      (datageneral) => datageneral.id === parseInt(selectedDataGeneralId2)
-    );
-
-    setSelectedDataGeneralId2(selectedDatageneral);
-    console.log(selectedDataGeneralId2);
   };
 
   // Función para buscar la data general asociada al camión seleccionado
@@ -113,6 +105,88 @@ export default function AgregarRendimientoVacio({
     fieldSetter(value);
   };
 
+  useEffect(() => {
+    const obtenerListaCiudades = async () => {
+      try {
+        const tokens = JSON.parse(localStorage.getItem("tokens"));
+        const res = await axios.get(`${API_BASE_URL}/ciudad/`, {
+          headers: {
+            Authorization: `Bearer ${tokens.access}`,
+          },
+        });
+        setCiudades(res.data);
+      } catch (error) {
+        console.error("Error al obtener la lista de ciudades:", error);
+      }
+    };
+    obtenerListaCiudades();
+  }, []);
+
+  const handleCiudadChange = (event) => {
+    const selectedCiudadId = event.target.value;
+
+    // Busca el camión seleccionado en la lista de camiones
+    const selectedCiudad = ciudades.find(
+      (ciudad) => ciudad.id === parseInt(selectedCiudadId)
+    );
+
+    // Actualiza el estado con el camión seleccionado
+    setSelectedCiudad(selectedCiudad);
+
+    console.log(selectedCiudad.nombre);
+  };
+
+  const handleCiudadChange2 = (event) => {
+    const selectedCiudadId = event.target.value;
+
+    // Busca el camión seleccionado en la lista de camiones
+    const selectedCiudad2 = ciudades.find(
+      (ciudad) => ciudad.id === parseInt(selectedCiudadId)
+    );
+
+    // Actualiza el estado con el camión seleccionado
+    setSelectedCiudad2(selectedCiudad2);
+    console.log(selectedCiudad2.nombre);
+  };
+
+  // useEffect para cargar la lista de Productos
+  useEffect(() => {
+    const obtenerListaProductos = async () => {
+      try {
+        const tokens = JSON.parse(localStorage.getItem("tokens"));
+        const res = await axios.get(`${API_BASE_URL}/Producto/`, {
+          headers: {
+            Authorization: `Bearer ${tokens.access}`,
+          },
+        });
+        setProductos(res.data);
+      } catch (error) {
+        console.error("Error al obtener la lista de productos:", error);
+      }
+    };
+
+    obtenerListaProductos();
+  }, []);
+
+  const handleProductosChange = (event) => {
+    const selectedProductoId = event.target.value;
+
+    // Busca el camión seleccionado en la lista de camiones
+    const selectedProducto = productos.find(
+      (producto) => producto.id === parseInt(selectedProductoId)
+    );
+
+    // Actualiza el estado con el camión seleccionado
+    setSelectedProducto(selectedProducto);
+    console.log(selectedProducto.nombre);
+    if (selectedProducto.nombre === "VACIO") {
+      // Si el nombre del producto está vacío, establece setPeso como 0
+      setPeso("0");
+    } else {
+      // De lo contrario, deja que el usuario ingrese un valor
+      setPeso("");
+    }
+  };
   // useEffect para cargar la lista de camiones
   useEffect(() => {
     const obtenerListaCamiones = async () => {
@@ -149,7 +223,7 @@ export default function AgregarRendimientoVacio({
     const fechaParaEnviar = new Date(fechaCreacion).toISOString();
 
     try {
-      if ((type === "agregar" && excesoReal === 0) || excesoReal === null) {
+      if (type === "agregar" && (excesoReal === 0 || excesoReal === null)) {
         // Configurar el encabezado con el token de acceso
         const tokens = JSON.parse(localStorage.getItem("tokens"));
         const accessToken = tokens?.access;
@@ -164,9 +238,9 @@ export default function AgregarRendimientoVacio({
         const data = {
           id_datageneral: selectedDataGeneralId.id,
           fecha_tanqueo: fechaParaEnviar,
-          origen: origen,
-          destino: destino,
-          carga: carga,
+          origen: selectedCiudad.nombre,
+          destino: selectedCiudad2.nombre,
+          carga: selectedProducto.nombre,
           peso: peso,
           km_recorrido: diferenciaKilometraje,
           rend_kmxglp: rendimientokmxgalon,
@@ -198,9 +272,9 @@ export default function AgregarRendimientoVacio({
         const data = {
           id_datageneral: selectedDataGeneralId.id,
           fecha_tanqueo: fechaParaEnviar,
-          origen: origen,
-          destino: destino,
-          carga: carga,
+          origen: selectedCiudad.nombre,
+          destino: selectedCiudad2.nombre,
+          carga: selectedProducto.nombre,
           peso: peso,
           km_recorrido: diferenciaKilometraje,
           rend_kmxglp: rendimientokmxgalon,
@@ -244,7 +318,7 @@ export default function AgregarRendimientoVacio({
     const fechaParaEnviar = new Date(fechaCreacion).toISOString();
 
     try {
-      if ((type === "agregar" && excesoReal === 0) || excesoReal === null) {
+      if (type === "agregar" && (excesoReal === 0 || excesoReal === null)) {
         // Configurar el encabezado con el token de acceso
         const tokens = JSON.parse(localStorage.getItem("tokens"));
         const accessToken = tokens?.access;
@@ -259,9 +333,9 @@ export default function AgregarRendimientoVacio({
         const data = {
           id_datageneral: selectedDataGeneralId.id,
           fecha_tanqueo: fechaParaEnviar,
-          origen: origen,
-          destino: destino,
-          carga: carga,
+          origen: selectedCiudad.nombre,
+          destino: selectedCiudad2.nombre,
+          carga: selectedProducto.nombre,
           peso: peso,
           km_recorrido: diferenciaKilometraje,
           rend_kmxglp: rendimientokmxgalon,
@@ -293,32 +367,32 @@ export default function AgregarRendimientoVacio({
 
   const handlelimpiar = () => {
     setFechaCreacion(new Date());
-    setOrigen("");
     setRendimientoEsperado("");
-    setRendimientoCalculado("");
-    setDestino("");
+    setRendimientoCalculado(null);
     setPeso("");
-    setCarga("");
+    setSelectedDataGeneralId(null); // Aquí debes establecer el valor de selectedDataGeneralId como null
     setDiferenciaKilometraje("");
     setMaxKilometraje("");
-    setExcesoReal("");
-    setError(false); // Restablecer el estado de error a falso
+    setExcesoReal(null);
+    setError(false);
     onClose(); // Cerrar el modal
   };
   const handlelimpiarAñadir = () => {
     setFechaCreacion(new Date());
-    setOrigen("");
-    setDestino("");
+    setSelectedCiudad(selectedCiudad2);
     setPeso("");
-    setCarga(""); // Restablecer la fecha de creación
-    setError(false); // Restablecer el estado de error a falso // Cerrar el modal
+    setError(false);
+
+    // Restablecer el estado de error a falso // Cerrar el modal
   };
 
   const handleFechaCreacionChange = (event) => {
-    const nuevaFecha = event.target.value;
-
-    // Actualizar el estado con la nueva fecha
-    setFechaCreacion(new Date(nuevaFecha));
+    const selectedDate = new Date(event.target.value);
+    // Ajustar la fecha según la zona horaria local
+    const adjustedDate = new Date(
+      selectedDate.getTime() + selectedDate.getTimezoneOffset() * 60000
+    );
+    setFechaCreacion(adjustedDate);
   };
 
   // Función para calcular la diferencia de kilometraje
@@ -455,29 +529,73 @@ export default function AgregarRendimientoVacio({
                 value={fechaCreacion.toISOString().split("T")[0]} // Establecer el valor del Input con la fecha actual
                 onChange={handleFechaCreacionChange} // Manejar el cambio en la fecha
               />
-
-              <Input
-                label="Origen"
-                isInvalid={error}
-                errorMessage={error && "Ingrese el Origen correctamente"}
-                value={origen}
-                onChange={(e) => handleNameChange(e, setOrigen)}
-              ></Input>
-              <Input
+              <div className="flex relative grid grid-cols-1 md:grid-cols-1  gap-1 ">
+                <Select
+                  items={ciudades}
+                  label="Selecciona ciudad de origen"
+                  variant="bordered"
+                  onChange={handleCiudadChange}
+                >
+                  {(ciudad) => (
+                    <SelectItem key={ciudad.id} textValue={`${ciudad.nombre}`}>
+                      <div className="flex gap-2 items-center">
+                        <span>{ciudad.nombre}</span>
+                      </div>
+                    </SelectItem>
+                  )}
+                </Select>
+                <span>
+                  Ciudad correlativa:{" "}
+                  {selectedCiudad ? selectedCiudad.nombre : "Vacio"}
+                </span>
+              </div>
+              <Select
+                items={ciudades}
+                label="Selecciona ciudad de Destino"
+                variant="bordered"
+                onChange={handleCiudadChange2}
+              >
+                {(ciudad) => (
+                  <SelectItem key={ciudad.id} textValue={`${ciudad.nombre}`}>
+                    <div className="flex gap-2 items-center">
+                      <span>{ciudad.nombre}</span>
+                    </div>
+                  </SelectItem>
+                )}
+              </Select>
+              {/* <Input
                 label="Destino"
                 isInvalid={error}
                 errorMessage={error && "Ingrese el Destino correctamente"}
                 value={destino}
                 onChange={(e) => handleNameChange(e, setDestino)}
-              ></Input>
-              <Input
+              ></Input> */}
+              {/* <Input
                 label="Carga"
                 isInvalid={error}
                 errorMessage={error && "Ingrese la carga correctamente"}
                 value={carga}
                 onChange={(e) => handleNameChange(e, setCarga)}
                 className="mb-2"
-              />
+              /> */}
+              <Select
+                items={productos}
+                label="Selecciona carga"
+                variant="bordered"
+                onChange={handleProductosChange}
+              >
+                {(producto) => (
+                  <SelectItem
+                    key={producto.id}
+                    textValue={`${producto.nombre}`}
+                  >
+                    <div className="flex gap-2 items-center">
+                      <span>{producto.nombre}</span>
+                    </div>
+                  </SelectItem>
+                )}
+              </Select>
+
               <Input
                 label="Peso"
                 isInvalid={error}

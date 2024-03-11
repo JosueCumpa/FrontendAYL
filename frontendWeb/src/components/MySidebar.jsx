@@ -10,6 +10,7 @@ import {
   ArrowTrendingUpIcon,
   PresentationChartLineIcon,
 } from "@heroicons/react/24/solid";
+import { FaTreeCity } from "react-icons/fa6";
 import { useEffect, useState } from "react";
 import { Menu, MenuItem, Sidebar } from "react-pro-sidebar";
 import {
@@ -164,6 +165,15 @@ export default function MySidebar({ setDarkMode }) {
             icon={<ArrowTrendingUpIcon className="h-6 w-6" />}
           >
             Banco
+          </MenuItem>
+        ) : null}
+
+        {user_data.op === "true" ? (
+          <MenuItem
+            component={<Link to={`/ciudad`} />}
+            icon={<FaTreeCity className="h-6 w-6" />}
+          >
+            ciudad
           </MenuItem>
         ) : null}
 

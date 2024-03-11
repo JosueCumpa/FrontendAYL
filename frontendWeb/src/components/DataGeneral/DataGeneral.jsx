@@ -391,26 +391,11 @@ const DataGeneral = () => {
                 F.actualización
             </TableColumn> */}
             <TableColumn key="placa" allowsSorting>
-              Placa
+              Placa camion
             </TableColumn>
             <TableColumn key="conductor" allowsSorting>
-              Conductor
+              Nombre conductor
             </TableColumn>
-            {/* <TableColumn key="producto" allowsSorting>
-                Producto
-            </TableColumn> */}
-            {/* <TableColumn key="Origen" allowsSorting>
-              Origen
-            </TableColumn>
-            <TableColumn key="Destino" allowsSorting>
-              Destino
-            </TableColumn>
-            <TableColumn key="Carga" allowsSorting>
-              Carga
-            </TableColumn>
-            <TableColumn key="Peso" allowsSorting>
-              Peso
-            </TableColumn> */}
             <TableColumn key="documento" allowsSorting>
               Documento
             </TableColumn>
@@ -476,11 +461,6 @@ const DataGeneral = () => {
                 <TableCell>
                   {item?.conductor_nombre} {item?.conductor_apellido}
                 </TableCell>
-                {/* <TableCell>{item?.origen}</TableCell>
-                <TableCell>{item?.destino}</TableCell>
-                <TableCell>{item?.carga}</TableCell>
-                <TableCell>{item?.peso}</TableCell> */}
-                {/* <TableCell>{item?.producto_nombre}</TableCell> */}
 
                 <TableCell>{item?.documento}</TableCell>
                 <TableCell>{item?.galones}</TableCell>
@@ -530,7 +510,7 @@ const DataGeneral = () => {
                     {item?.estado_omitir ? "omitido" : "no omitido"}
                   </Chip>
                 </TableCell>
-                <TableCell>
+                <TableCell className="flex relative">
                   <EditarData
                     DataGeneral={item}
                     updateDataGeneral={updateDataGeneral}
