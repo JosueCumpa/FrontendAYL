@@ -35,7 +35,7 @@ export default function AgregarUsuario({ type = "agregar", updateUsuarios }) {
     let value = e.target.value;
 
     // Restringir caracteres: solo letras y números
-    value = value.replace(/[^a-zA-Z0-9]+/g, " ");
+    value = value.replace(/[^a-zA-Z0-9ñ]+/g, " ");
 
     if (value.length > 50) {
       value = value.substring(0, 50);
