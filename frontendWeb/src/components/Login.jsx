@@ -42,7 +42,7 @@ export default function Login() {
       //console.log(response.data);
       // Ejemplo de uso de toast para mostrar un mensaje
       toast.success("Inicio de sesión exitoso!");
-      navigate("/dashboard");
+      navigate("/consumo/dashboard");
     } catch (error) {
       // Manejo de errores, por ejemplo, mostrar un mensaje de error con toast
       toast.error("Error al iniciar sesión. Verifica tus credenciales.");
@@ -50,7 +50,7 @@ export default function Login() {
   };
 
   const handleKeyDown = (event) => {
-    if (event.key === 'Enter') {
+    if (event.key === "Enter") {
       handleLogin();
     }
   };

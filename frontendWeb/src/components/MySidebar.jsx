@@ -25,7 +25,7 @@ import {
 } from "@nextui-org/react";
 
 import { Link, useNavigate } from "react-router-dom";
-import Logo from "../../src/assets/LOGO ALEX Y LALITO.png";
+import Logo from "../assets/LOGO ALEX Y LALITO.png";
 import { MoonIcon } from "../../src/assets/MoonIcon";
 import { SunIcon } from "../../src/assets/SunIcon";
 
@@ -53,7 +53,7 @@ export default function MySidebar({ setDarkMode }) {
     localStorage.removeItem("user_data");
     localStorage.removeItem("tokens");
     // Redirigir al usuario a la página de inicio de sesión
-    navigate("/login");
+    navigate("/consumo/login");
   };
   const toggleDarkMode = () => {
     const newDarkMode = !darkMode;
@@ -143,7 +143,7 @@ export default function MySidebar({ setDarkMode }) {
           </NavbarContent>
         </Navbar>
         <MenuItem
-          component={<Link to={`/dashboard`} />}
+          component={<Link to={`/consumo/dashboard`} />}
           icon={<ChartPieIcon className="h-6 w-6" />}
         >
           Dashboard
@@ -152,7 +152,7 @@ export default function MySidebar({ setDarkMode }) {
         {/* Condición para mostrar o no el MenuItem de Usuarios */}
         {user_data.group === "true" && user_data.op === "true" ? (
           <MenuItem
-            component={<Link to={`/usuarios`} />}
+            component={<Link to={`/consumo/usuarios`} />}
             icon={<UserIcon className="h-6 w-6" />}
           >
             Usuarios
@@ -161,7 +161,7 @@ export default function MySidebar({ setDarkMode }) {
 
         {user_data.op === "true" ? (
           <MenuItem
-            component={<Link to={`/banco`} />}
+            component={<Link to={`/consumo/banco`} />}
             icon={<ArrowTrendingUpIcon className="h-6 w-6" />}
           >
             Banco
@@ -170,7 +170,7 @@ export default function MySidebar({ setDarkMode }) {
 
         {user_data.op === "true" ? (
           <MenuItem
-            component={<Link to={`/ciudad`} />}
+            component={<Link to={`/consumo/ciudad`} />}
             icon={<FaTreeCity className="h-6 w-6" />}
           >
             ciudad
@@ -179,7 +179,7 @@ export default function MySidebar({ setDarkMode }) {
 
         {user_data.op === "true" ? (
           <MenuItem
-            component={<Link to={`/grifo`} />}
+            component={<Link to={`/consumo/grifo`} />}
             icon={<CpuChipIcon className="h-6 w-6" />}
           >
             Grifos
@@ -187,7 +187,7 @@ export default function MySidebar({ setDarkMode }) {
         ) : null}
         {user_data.op === "true" ? (
           <MenuItem
-            component={<Link to={`/producto`} />}
+            component={<Link to={`/consumo/producto`} />}
             icon={<TagIcon className="h-6 w-6" />}
           >
             Producto
@@ -195,7 +195,7 @@ export default function MySidebar({ setDarkMode }) {
         ) : null}
         {user_data.op === "true" ? (
           <MenuItem
-            component={<Link to={`/conductor`} />}
+            component={<Link to={`/consumo/conductor`} />}
             icon={<IdentificationIcon className="h-6 w-6" />}
           >
             Conductores
@@ -203,7 +203,7 @@ export default function MySidebar({ setDarkMode }) {
         ) : null}
         {user_data.op === "true" ? (
           <MenuItem
-            component={<Link to={`/camion`} />}
+            component={<Link to={`/consumo/camion`} />}
             icon={<BriefcaseIcon className="h-6 w-6" />}
           >
             Camiones
@@ -211,7 +211,7 @@ export default function MySidebar({ setDarkMode }) {
         ) : null}
         {user_data.op === "true" ? (
           <MenuItem
-            component={<Link to={`/datageneral`} />}
+            component={<Link to={`/consumo/datageneral`} />}
             icon={<CircleStackIcon className="h-6 w-6" />}
           >
             Data General
@@ -220,7 +220,7 @@ export default function MySidebar({ setDarkMode }) {
 
         {user_data.op === "true" ? (
           <MenuItem
-            component={<Link to={`/rendimiento`} />}
+            component={<Link to={`/consumo/rendimiento`} />}
             icon={<PresentationChartLineIcon className="h-6 w-6" />}
           >
             Rendimiento

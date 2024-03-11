@@ -24,12 +24,12 @@ function App() {
       <Routes>
         {/* Rutas públicas */}
 
-        <Route path="/" element={<Navigate to="/login" />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/consumo/" element={<Navigate to="/consumo/login" />} />
+        <Route path="/consumo/login" element={<Login />} />
 
         {/* Rutas privadas */}
         <Route
-          path="/"
+          path="/consumo/"
           element={
             <PrivateRoute>
               <MainContent />
@@ -37,10 +37,10 @@ function App() {
           }
         >
           {/* Ruta anidada protegida */}
-          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="/consumo/dashboard" element={<Dashboard />} />
 
           <Route
-            path="usuarios"
+            path="/consumo/usuarios"
             element={
               <PrivateRoute requiredUserGroup="true">
                 <Usuarios />
@@ -48,7 +48,7 @@ function App() {
             }
           />
           <Route
-            path="grifo"
+            path="/consumo/grifo"
             element={
               <PrivateRoute opgroup="true">
                 <Grifos />
@@ -56,7 +56,7 @@ function App() {
             }
           />
           <Route
-            path="producto"
+            path="/consumo/producto"
             element={
               <PrivateRoute opgroup="true">
                 <Productos />
@@ -64,7 +64,7 @@ function App() {
             }
           />
           <Route
-            path="conductor"
+            path="/consumo/conductor"
             element={
               <PrivateRoute opgroup="true">
                 <Conductores />
@@ -72,7 +72,7 @@ function App() {
             }
           />
           <Route
-            path="camion"
+            path="/consumo/camion"
             element={
               <PrivateRoute opgroup="true">
                 <Camiones />
@@ -88,7 +88,7 @@ function App() {
             }
           />
           <Route
-            path="banco"
+            path="/consumo/banco"
             element={
               <PrivateRoute opgroup="true">
                 <Banco />
@@ -96,7 +96,7 @@ function App() {
             }
           />
           <Route
-            path="rendimiento"
+            path="/consumo/rendimiento"
             element={
               <PrivateRoute opgroup="true">
                 <Rendimiento />
@@ -104,7 +104,7 @@ function App() {
             }
           />
           <Route
-            path="ciudad"
+            path="/consumo/ciudad"
             element={
               <PrivateRoute opgroup="true">
                 <Ciudades />
