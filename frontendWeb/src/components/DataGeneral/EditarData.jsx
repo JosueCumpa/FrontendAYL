@@ -120,10 +120,6 @@ export default function EditarData({
           detalle: operacionCompleta,
           observacion: descripcion,
           estado_omitir: estate,
-          // origen: origen,
-          // destino: destino,
-          // carga: carga,
-          // peso: peso,
         };
         console.log(data);
 
