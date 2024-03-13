@@ -58,7 +58,7 @@ export default function AgregarData({ type = "agregar", updateDataGeneral }) {
   const handleNameChange = (e, fieldSetter) => {
     let value = e.target.value;
     // Restringir caracteres: solo letras y números
-    value = value.replace(/[^a-zA-Z0-9-.]+/g, " ");
+    value = value.replace(/[^a-zA-Z0-9-.Ññ]+/g, " ");
     if (value.length > 100) {
       value = value.substring(0, 100);
     }
@@ -83,7 +83,7 @@ export default function AgregarData({ type = "agregar", updateDataGeneral }) {
     const fechaParaEnviar = new Date(fechaCreacion).toISOString().split("T")[0];
 
     try {
-      if (type === "agregar") {
+      if (type === "agregar" && estate === false) {
         // Configurar el encabezado con el token de acceso
         const tokens = JSON.parse(localStorage.getItem("tokens"));
         const accessToken = tokens?.access;
@@ -124,11 +124,51 @@ export default function AgregarData({ type = "agregar", updateDataGeneral }) {
           success: "Data general Registrado",
           error: "Error al registrar data general! Verifique los campos",
         });
+        updateDataGeneral();
+        onClose();
+        handlelimpiar();
+      } else {
+        // Configurar el encabezado con el token de acceso
+        const tokens = JSON.parse(localStorage.getItem("tokens"));
+        const accessToken = tokens?.access;
+
+        const headers = {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        };
+
+        const url = `${API_BASE_URL}/DataGeneral/`;
+
+        const data = {
+          fecha_creacion: fechaParaEnviar,
+          placa: selectedCamion.id,
+          conductor: selectedCamion.conductor_id,
+          galones: galones,
+          producto: 1,
+          documento: documento,
+          precio: precio,
+          total: total,
+          kilometraje: Kilometraje,
+          grifo: selectedGrifo.id,
+          estado: estado,
+          detalle: operacionCompleta,
+          observacion: descripcion,
+          estado_rendimiento: true,
+          estado_omitir: estate,
+        };
+        console.log("enviar:", data);
+
+        // Agregar el encabezado a la solicitud
+        await toast.promise(axios.post(url, data, { headers }), {
+          loading: "Registrando...",
+          success: "Data general Registrado",
+          error: "Error al registrar data general! Verifique los campos",
+        });
+        updateDataGeneral();
+        onClose();
+        handlelimpiar();
       }
       // Luego de editar el usuario, llama a la función de actualización
-      updateDataGeneral();
-      onClose();
-      handlelimpiar();
     } catch (error) {
       console.error("Error en la solicitud:", error.message);
     }

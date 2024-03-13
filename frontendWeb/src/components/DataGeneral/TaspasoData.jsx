@@ -114,9 +114,9 @@ export default function TaspasoData({
       "Monto de intercambio:" + Number(galonesinter) * Number(precio)
     );
     console.log("Monto total suma:" + nuevoTotalSuma.toFixed(2));
-    setGalonesActual1(nuevaCantidadResta);
+    setGalonesActual1(nuevaCantidadResta.toFixed(2));
     setTotalResta(nuevoTotalresta.toFixed(2));
-    setGalonesActual2(nuevoCantidadSuma);
+    setGalonesActual2(nuevoCantidadSuma.toFixed(2));
     setTotalSuma(nuevoTotalSuma.toFixed(2));
   };
 

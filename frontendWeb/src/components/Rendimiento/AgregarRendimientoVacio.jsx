@@ -378,7 +378,6 @@ export default function AgregarRendimientoVacio({
     onClose(); // Cerrar el modal
   };
   const handlelimpiarAñadir = () => {
-    setFechaCreacion(new Date());
     setSelectedCiudad(selectedCiudad2);
     setPeso("");
     setError(false);
